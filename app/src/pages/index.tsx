@@ -45,7 +45,7 @@ const Index = () => (
 
     <DarkModeSwitch />
     <Footer>
-      <Text>Next ❤️ Chakra</Text>
+      <Text fontSize={'sm'}>A submission for Ripple CBDC Innovate by <Code>0xjjpa</Code></Text>
     </Footer>
     <CTA />
   </Container>
