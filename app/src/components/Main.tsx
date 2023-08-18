@@ -8,5 +8,6 @@ export const Main = (props: StackProps) => (
     pt="2rem"
     px="1rem"
     {...props}
+    
   />
 )

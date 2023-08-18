@@ -6,10 +6,8 @@ export const Container = (props: FlexProps) => (
     alignItems="center"
     justifyContent="flex-start"
     py="2rem"
-    bg="gray.50"
     color="black"
     _dark={{
-      bg: 'gray.900',
       color: 'white',
     }}
     transition="all 0.15s ease-out"

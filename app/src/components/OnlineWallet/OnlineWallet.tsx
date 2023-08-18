@@ -2,6 +2,7 @@ import { Box, Code, Flex, Heading } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { Client, Wallet } from "xrpl";
 import { OnlineTransfer } from "./OnlineTransfer";
+import { OnlineTransaction } from "./OnlineTransaction";
 
 export const OnlineWallet = () => {
   const [wallet, setWallet] = useState<Wallet>();
@@ -17,22 +18,30 @@ export const OnlineWallet = () => {
   }, []);
 
   useEffect(() => {
-    const connectToNetwork = async() => {
-      const client = new Client("wss://s.altnet.rippletest.net:51233")
-      await client.connect()
+    const connectToNetwork = async () => {
+      const client = new Client("wss://s.altnet.rippletest.net:51233");
+      await client.connect();
       setClient(client);
-    }
-    connectToNetwork()
-  }, [])
+    };
+    connectToNetwork();
+  }, []);
   return (
-    <Flex mt="2" textAlign={"center"} gap='2' flexDir={'column'}>
-      <Heading fontSize={"xl"} as="h3">
-        Address
-      </Heading>
-      <Code px="2" py="1">
-        {wallet?.classicAddress}
-      </Code>
-      <OnlineTransfer xrplClient={client} wallet={wallet} />
+    <Flex mt="2" textAlign={"center"} gap="10" flexDir={"column"}>
+      <Flex flexDir={"column"} gap="2">
+        <Heading fontSize={"xl"} as="h3">
+          Address
+        </Heading>
+        <Code px="2" py="1">
+          {wallet?.classicAddress}
+        </Code>
+        <OnlineTransfer xrplClient={client} wallet={wallet} />
+      </Flex>
+      <Flex flexDir={"column"} gap="2">
+        <Heading fontSize={"xl"} as="h3">
+          Transaction
+        </Heading>
+        <OnlineTransaction />
+      </Flex>
     </Flex>
   );
 };
