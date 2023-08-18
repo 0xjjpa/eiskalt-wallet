@@ -17,11 +17,14 @@ const DEFAULT_FUNDING_AMOUNT = 1000000000;
 export const OnlineTransfer = ({
   xrplClient,
   wallet,
+  addressToTransfer,
+  setAddressToTransfer
 }: {
   xrplClient: Client;
   wallet: Wallet;
+  addressToTransfer: string,
+  setAddressToTransfer: (address: string) => void
 }) => {
-  const [addressToTransfer, setAddressToTransfer] = useState("");
   const toast = useToast();
   const [transferTx, setTransferTx] = useState("");
   const [isSuccessful, setSuccessful] = useState(false);
@@ -30,9 +33,6 @@ export const OnlineTransfer = ({
 
   const transferXRP = async () => {
     setLoading(true);
-    console.log(
-      `👤 User Module Found - Started transfer from ${wallet.address} to ${addressToTransfer}`
-    );
     const prepared = await xrplClient.autofill(
       buildTransaction(
         wallet.address,
