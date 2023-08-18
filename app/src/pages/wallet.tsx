@@ -7,6 +7,7 @@ import { DarkModeSwitch } from "../components/DarkModeSwitch";
 import { CTA } from "../components/CTA";
 import { Footer } from "../components/Footer";
 import useOnlineStatus from "../hooks/useOnlineStatus";
+import { OfflineWallet } from "../components/OfflineWallet/OfflineWallet";
 
 const Index = () => {
   const isOnline = useOnlineStatus();
@@ -27,8 +28,11 @@ const Index = () => {
             application has been saved as a PWA.
           </Text>
           <Flex mt="4">
-            {!isOnline ? (
-              <Badge colorScheme="green">Device is offline</Badge>
+            {isOnline ? (
+              <Flex flexDir={"column"}>
+                <Badge colorScheme="green">Device is offline</Badge>
+                <OfflineWallet />
+              </Flex>
             ) : (
               <Badge colorScheme="red">Device is online</Badge>
             )}
