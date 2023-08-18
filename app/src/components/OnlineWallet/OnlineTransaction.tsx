@@ -11,10 +11,12 @@ export const OnlineTransaction = ({ addressToWithdraw, xrplClient, wallet }: { a
       const payment = buildTransaction(
         addressToWithdraw,
         wallet.address,
-        `${10000000}`
+        `${100000}`
         )
       const prepared = await xrplClient.autofill(payment)
-      setpreparedTransactionAsJSONPayload(JSON.stringify(prepared));
+      const max_ledger = prepared.LastLedgerSequence
+      const offlineTransaction = { LastLedgerSequence: Number(max_ledger) + 100, ...prepared }
+      setpreparedTransactionAsJSONPayload(JSON.stringify(offlineTransaction));
     }
     addressToWithdraw && wallet && xrplClient && prepareTransaction();
   }, [addressToWithdraw, wallet, xrplClient])

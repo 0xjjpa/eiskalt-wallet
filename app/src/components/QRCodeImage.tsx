@@ -19,7 +19,7 @@ export const QRCodeImage = ({ payload }: { payload: string }) => {
           width: SVG_QR_CODE_WIDTH_IN_PX,
           height: SVG_QR_CODE_WIDTH_IN_PX,
           content: payload,
-          ecl: 'H',
+          ecl: 'M',
           join: true,
           padding: 1,
           container: "svg-viewbox",
