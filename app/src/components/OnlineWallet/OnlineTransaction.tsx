@@ -1,5 +1,5 @@
 import { Flex, Text, Code } from "@chakra-ui/react";
-import { OnlineQRCode } from "./OnlineQRCode";
+import { QRCodeImage } from "../QRCodeImage";
 import { useEffect, useState } from "react";
 import { Client, Wallet } from "xrpl";
 import { buildTransaction } from "../../lib/xrpl";
@@ -23,7 +23,7 @@ export const OnlineTransaction = ({ addressToWithdraw, xrplClient, wallet }: { a
       <Text fontSize={"xs"}>
         Scan the QR code to sign a transaction to deposit <Code>0.01 XRP</Code>
       </Text>
-      <OnlineQRCode payload={preparedTransactionAsJSONPayload} />
+      <QRCodeImage payload={preparedTransactionAsJSONPayload} />
     </Flex>
   );
 };

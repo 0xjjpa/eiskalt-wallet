@@ -2,7 +2,7 @@ import { Box, useColorMode } from "@chakra-ui/react";
 import QRCode from "qrcode-svg";
 import { useEffect } from "react";
 
-export const OnlineQRCode = ({ payload }: { payload: string }) => {
+export const QRCodeImage = ({ payload }: { payload: string }) => {
   const { colorMode } = useColorMode();
   const SVG_QR_CODE_WIDTH_IN_PX = 256;
 
