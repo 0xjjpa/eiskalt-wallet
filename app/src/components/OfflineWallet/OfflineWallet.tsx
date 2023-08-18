@@ -13,10 +13,8 @@ export const OfflineWallet = () => {
 
   useEffect(() => {
     const checkAndLoadWallet = async () => {
-      console.log('📦 Retrieving wallet from Index DB...')
       const wallet = await getWalletFromIndexDB();
       if (!wallet) {
-        console.log("💳 Wallet not found in Index DB");
         const newWallet = await generateAndStoreWallet();
         setWallet(newWallet);
       } else {
@@ -49,8 +47,8 @@ export const OfflineWallet = () => {
 
         request.onsuccess = async () => {
           const walletDataFromDB = request.result as WalletsData;
-          const wallet = new Wallet(walletDataFromDB.publicKey, walletDataFromDB.privateKey);
-          if (wallet) {
+          if (walletDataFromDB) {
+            const wallet = new Wallet(walletDataFromDB.publicKey, walletDataFromDB.privateKey);
             resolve(wallet);
           } else {
             resolve(null);
@@ -67,6 +65,7 @@ export const OfflineWallet = () => {
 
   const generateAndStoreWallet = async (): Promise<Wallet> => {
     const wallet = Wallet.generate(ECDSA.secp256k1);
+    console.log("Wallet", wallet);
 
     const publicKey = wallet.publicKey;
     const privateKey = wallet.privateKey
