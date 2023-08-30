@@ -17,7 +17,7 @@ export const CTA = () => (
   >
     <Button
       as={Link}
-      href='/wallet'
+      href='/wallet-1'
       variant="outline"
       colorScheme="blue"
       rounded="button"
@@ -25,11 +25,11 @@ export const CTA = () => (
       mx={2}
       width="full"
     >
-      Wallet mode
+      👤 Person 1
     </Button>
     <Button
       as={Link}
-      href='/demo'
+      href='/wallet-2'
       variant="solid"
       colorScheme="blue"
       rounded="button"
@@ -37,7 +37,7 @@ export const CTA = () => (
       mx={2}
       width="full"
     >
-      Demo signing
+      👤 Person 2
     </Button>
   </Container>
 )

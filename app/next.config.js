@@ -17,6 +17,9 @@ const withPWA = require('next-pwa')({
     sassOptions: {
       includePaths: [path.join(__dirname, 'styles')],
     },
+    experimental: {
+      swcPlugins: [['@swc-jotai/react-refresh', {}]],
+    }
   }
 
   module.exports = withPWA(nextConfig)

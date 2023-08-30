@@ -76,42 +76,18 @@ export const OnlineWallet = () => {
   const handleChangeAddress = (e) => setAddressToTransfer(e.target.value);
 
   return (
-    <Flex mt="2" textAlign={"center"} gap="10" flexDir={"column"}>
+    <Flex mt="10" textAlign={"center"} gap="10" flexDir={"column"}>
       <Flex flexDir={"column"} gap="2">
         <Heading fontSize={"xl"} as="h3">
-          Address
+          Pub Address
         </Heading>
         <Code px="2" py="1">
           {wallet?.classicAddress}
         </Code>
-        <OnlineTransfer
-          xrplClient={client}
-          wallet={wallet}
-          addressToTransfer={addressToTransfer}
-          setAddressToTransfer={setAddressToTransfer}
-        />
       </Flex>
       <Flex flexDir={"column"} gap="2">
         <Heading fontSize={"xl"} as="h3">
-          Transaction
-        </Heading>
-        <InputGroup size="md">
-          <Input
-            type="text"
-            value={addressToTransfer}
-            onChange={handleChangeAddress}
-            placeholder="rJrbSWfK...ZsySgZhZev"
-          />
-        </InputGroup>
-        <OnlineTransaction
-          addressToWithdraw={addressToTransfer}
-          xrplClient={client}
-          wallet={wallet}
-        />
-      </Flex>
-      <Flex flexDir={"column"} gap="2">
-        <Heading fontSize={"xl"} as="h3">
-          Transaction
+          Scanner
         </Heading>
         <Button onClick={() => setEnableQRScanner(!enableQRScanner)}>
           🖊️ Scan to broadcast transaction
