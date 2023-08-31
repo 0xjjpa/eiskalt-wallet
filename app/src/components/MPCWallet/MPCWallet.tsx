@@ -7,6 +7,8 @@ import {
   Text,
   Box,
   IconButton,
+  useClipboard,
+  SimpleGrid,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 const { getHash } = require("emoji-hash-gen");
@@ -23,7 +25,7 @@ import { atomWithStorage } from "jotai/utils";
 import { useAtom } from "jotai";
 import { MPCValue } from "./MPCValue";
 import { MPCButton } from "./MPCButton";
-import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
+import { CheckIcon, CopyIcon, ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import { readFromIPFSURL, uploadJSONToIPFS } from "../../lib/ipfs";
 
 type STEP =
@@ -50,6 +52,11 @@ export const MPCWallet = ({
   pub: string;
   instance: number;
 }) => {
+  const {
+    onCopy,
+    setValue: setClipboardValue,
+    hasCopied,
+  } = useClipboard("");
   const [enableQRScanner, setEnableQRScanner] = useState(false);
   const [qrPayload, setBarcodeValue] = useState("");
   const [currentStep, setCurrentStep] = useState<STEP>("step_0");
@@ -89,10 +96,10 @@ export const MPCWallet = ({
     return message3;
   };
 
-  const stepFour = async (messageThree: string) => {
+  const stepFour = async (_messageThree: string) => {
     console.log("(🔑,4️⃣) 🟠 Executing step four, you should be wallet-2");
     const dkgp2 = dkg as DKGP2;
-    const doneMessage = await dkgp2.step2(messageThree); // This might fail if we have lost the context
+    const doneMessage = await dkgp2.step2(_messageThree); // This might fail if we have lost the context
     console.log("(🔑,4️⃣) 🟢 Step four executed [message]", doneMessage);
     const keyshare = dkgp2.exportKeyShare2();
     return { message: doneMessage, keyshare };
@@ -152,12 +159,13 @@ export const MPCWallet = ({
   }, [pub]);
 
   useEffect(() => {
-    const uploadPayloadToIPFS = async() => {
-      const ipfsURL = await uploadJSONToIPFS({ message: currentPayload })
+    const uploadPayloadToIPFS = async () => {
+      const ipfsURL = await uploadJSONToIPFS({ message: currentPayload });
       setIPFSUrl(ipfsURL);
-    }
-    currentPayload && uploadPayloadToIPFS()
-  }, [currentPayload])
+      setClipboardValue(ipfsURL);
+    };
+    currentPayload && uploadPayloadToIPFS();
+  }, [currentPayload]);
 
   useEffect(() => {
     setMessageOne("");
@@ -169,14 +177,29 @@ export const MPCWallet = ({
   return (
     <Flex mt="2" textAlign={"center"} gap="10" flexDir={"column"}>
       <Box>
-        <Text fontSize={'sm'}>Developer Tools</Text>
-        <IconButton
-          w="fit-content"
-          mx="auto"
-          icon={!enableQRScanner ? <ViewIcon /> : <ViewOffIcon />}
-          onClick={() => setEnableQRScanner(!enableQRScanner)}
-          aria-label="Toggle camera"
-        />
+        <Text fontSize={"sm"}>Developer Tools</Text>
+        <SimpleGrid columns={2} mt="5">
+          <Text fontSize={'xs'}>Toggle Camera</Text>
+          <IconButton
+            size={'xs'}
+            w="fit-content"
+            mx="auto"
+            icon={!enableQRScanner ? <ViewIcon /> : <ViewOffIcon />}
+            onClick={() => setEnableQRScanner(!enableQRScanner)}
+            aria-label="Toggle camera"
+          />
+        </SimpleGrid>
+        <SimpleGrid columns={2} mt='2'>
+          <Text fontSize={'xs'}>Copy QR code</Text>
+          <IconButton
+            size={'xs'}
+            w="fit-content"
+            mx="auto"
+            icon={!hasCopied ? <CopyIcon /> : <CheckIcon />}
+            onClick={() => onCopy()}
+            aria-label="Copy QR code"
+          />
+        </SimpleGrid>
       </Box>
       <Flex flexDir={"column"} gap="2">
         {pub && <MPCValue label={"Pub Address"} value={pub} />}
