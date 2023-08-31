@@ -1,8 +1,12 @@
 import { Button } from '@chakra-ui/react'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+
 import { Container } from './Container'
 
-export const CTA = () => (
+export const CTA = () => {
+  const pathname = usePathname()
+  return (
   <Container
     flexDirection="row"
     position="fixed"
@@ -18,7 +22,7 @@ export const CTA = () => (
     <Button
       as={Link}
       href='/wallet-1'
-      variant="outline"
+      variant={ pathname == '/wallet-1' ? "solid" : "outline" }
       colorScheme="blue"
       rounded="button"
       flexGrow={1}
@@ -30,7 +34,7 @@ export const CTA = () => (
     <Button
       as={Link}
       href='/wallet-2'
-      variant="solid"
+      variant={ pathname == '/wallet-2' ? "solid" : "outline" }
       colorScheme="blue"
       rounded="button"
       flexGrow={3}
@@ -40,4 +44,4 @@ export const CTA = () => (
       👤 Person 2
     </Button>
   </Container>
-)
+)}

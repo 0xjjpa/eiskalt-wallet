@@ -93,9 +93,8 @@ const Index = () => {
               </Button>
               <MPCWallet
                 dkg={dkg}
-                setPriv={setPriv}
-                setPub={setPub}
                 pub={pub}
+                priv={priv}
                 instance={INSTANCE}
               />
             </Flex>
