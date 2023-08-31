@@ -12,6 +12,7 @@ export const MPCValue = ({ label, value }: { label: string, value: string }) => 
         {abbreviate(value)}
       </Code>
       <Text letterSpacing={"10px"}>{getHash(value)}</Text>
+      <Text fontSize={'xs'}>{value.length} characters.</Text>
     </Flex>
   );
 };

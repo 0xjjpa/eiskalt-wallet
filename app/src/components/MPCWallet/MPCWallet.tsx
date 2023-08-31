@@ -24,6 +24,7 @@ import { useAtom } from "jotai";
 import { MPCValue } from "./MPCValue";
 import { MPCButton } from "./MPCButton";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
+import { readFromIPFSURL, uploadJSONToIPFS } from "../../lib/ipfs";
 
 type STEP =
   | "step_0"
@@ -53,6 +54,7 @@ export const MPCWallet = ({
   const [qrPayload, setBarcodeValue] = useState("");
   const [currentStep, setCurrentStep] = useState<STEP>("step_0");
   const [currentPayload, setCurrentPayload] = useState<string>("");
+  const [ipfsURL, setIPFSUrl] = useState<string>("");
   const [messageOne, setMessageOne] = useAtom(messageOneAtom);
   const [messageTwo, setMessageTwo] = useAtom(messageTwoAtom);
   const [messageThree, setMessageThree] = useAtom(messageThreeAtom);
@@ -90,7 +92,7 @@ export const MPCWallet = ({
   const stepFour = async (messageThree: string) => {
     console.log("(🔑,4️⃣) 🟠 Executing step four, you should be wallet-2");
     const dkgp2 = dkg as DKGP2;
-    const doneMessage = await dkgp2.step2(messageTwo); // This might fail if we have lost the context
+    const doneMessage = await dkgp2.step2(messageThree); // This might fail if we have lost the context
     console.log("(🔑,4️⃣) 🟢 Step four executed [message]", doneMessage);
     const keyshare = dkgp2.exportKeyShare2();
     return { message: doneMessage, keyshare };
@@ -110,7 +112,9 @@ export const MPCWallet = ({
   const STEP_TWO_TWO_COMPLETED = messageDoneForTwo.length > 0;
 
   useEffect(() => {
-    const loadPayload = async () => {
+    const loadPayload = async (qrPayloadAsIPFSUrl: string) => {
+      const response = await readFromIPFSURL(qrPayloadAsIPFSUrl);
+      const qrPayload = response.message;
       console.log("(📸,📦) Payload found.", qrPayload);
       if (currentStep == "step_1_1") {
         const message = await stepOne(qrPayload);
@@ -140,12 +144,20 @@ export const MPCWallet = ({
         setKeyshare(keyshare);
       }
     };
-    qrPayload && loadPayload();
+    qrPayload && loadPayload(qrPayload);
   }, [currentStep, qrPayload]);
 
   useEffect(() => {
     pub && setCurrentPayload(pub);
   }, [pub]);
+
+  useEffect(() => {
+    const uploadPayloadToIPFS = async() => {
+      const ipfsURL = await uploadJSONToIPFS({ message: currentPayload })
+      setIPFSUrl(ipfsURL);
+    }
+    currentPayload && uploadPayloadToIPFS()
+  }, [currentPayload])
 
   useEffect(() => {
     setMessageOne("");
@@ -182,7 +194,7 @@ export const MPCWallet = ({
             value={deriveAddressFromCurvePoint(keyshare.Q.x, keyshare.Q.y)}
           />
         )}
-        {currentPayload && <QRCodeImage payload={currentPayload} />}
+        {currentPayload && ipfsURL && <QRCodeImage payload={ipfsURL} />}
         <Text letterSpacing={"10px"}>{getHash(currentPayload)}</Text>
         <Heading fontSize={"xl"} as="h3">
           Scanner
