@@ -1,10 +1,13 @@
-import { Button, Code, Flex, Heading, useToast } from "@chakra-ui/react";
+import { Button, Code, Flex, Heading, useToast, Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
+const { getHash } = require("emoji-hash-gen");
 import { DKGP1, DKGP2 } from "@safeheron/two-party-mpc-adapter";
 
 import { abbreviate } from "../../helpers";
 import { QRScanner } from "../QRScanner";
 import { QRCodeImage } from "../QRCodeImage";
+
+type STEP = "step_1" | "step_2" | "step_3";
 
 export const MPCWallet = ({
   dkg,
@@ -19,53 +22,36 @@ export const MPCWallet = ({
   pub: string;
   instance: number;
 }) => {
-  const toast = useToast();
-
-  const [isLoading, setLoading] = useState(false);
-  const [failTimeout, setFailTimeout] = useState<NodeJS.Timeout>();
   const [enableQRScanner, setEnableQRScanner] = useState(false);
   const [qrPayload, setBarcodeValue] = useState("");
+  const [currentStep, setCurrentStep] = useState<STEP>();
+  const [currentPayload, setCurrentPayload] = useState<string>("");
 
-  const handleDKGP1 = async () => {
-    console.log("(🔑,⚙️) 🟠 Kickstarting DKG process");
-    const { priv, pub } = await dkg.createContext();
-    setPriv(priv);
-    setPub(pub);
-    console.log("(🔑,⚙️) 🟢 DKG process finished");
-    setLoading(false);
-  };
-
-  const scanMessageOne = async ({ pub }) => {
+  const stepOne = async (pub: string) => {
+    console.log("(🔑,1️⃣) 🟠 Executing step one, you should be wallet-1");
     const dkgp1 = dkg as DKGP1;
-    const message1 = await dkgp1.step1(pub);
+    const message1 = await dkgp1.step1.call(dkg, pub);
+    console.log("(🔑,1️⃣) 🟢 Step one executed [message]", message1);
+    return message1;
   };
+
   useEffect(() => {
-    clearTimeout(failTimeout);
-    setFailTimeout(null);
-  }, [isLoading]);
+    const loadPayload = async () => {
+      if (currentStep == 'step_1') {
+        const message1 = await stepOne(qrPayload);
+        const newPayload = [message1, pub].join(',')
+        setCurrentPayload(newPayload);
+      }
+    };
+    qrPayload && loadPayload();
+  }, [currentStep, qrPayload]);
+
+  useEffect(() => {
+    pub && setCurrentPayload(pub);
+  }, [pub])
 
   return (
     <Flex mt="2" textAlign={"center"} gap="10" flexDir={"column"}>
-      <Button
-        isLoading={isLoading}
-        onClick={() => {
-          console.log("(🔑,⬇️) Starting onClick handler");
-          setLoading(true);
-          setTimeout(() => {
-            handleDKGP1();
-          }, 0);
-          const fail = setTimeout(() => {
-            toast({
-              title: "DKG Algorithm",
-              description: "Key Generation timed out",
-              status: "error",
-            });
-          }, 60000);
-          setFailTimeout(fail);
-        }}
-      >
-        {`🔑 Generate MPC share (pt.${instance})`}
-      </Button>
       {pub && (
         <Flex flexDir={"column"} gap="2">
           <Heading fontSize={"xl"} as="h3">
@@ -74,13 +60,22 @@ export const MPCWallet = ({
           <Code px="2" py="1">
             {abbreviate(pub)}
           </Code>
-          <QRCodeImage payload={pub} />
+          <Text letterSpacing={'10px'}>{getHash(pub)}</Text>
+          {currentPayload && <QRCodeImage payload={currentPayload} />}
+          <Text letterSpacing={'10px'}>{getHash(currentPayload)}</Text>
           <Heading fontSize={"xl"} as="h3">
             Scanner
           </Heading>
-          <Button onClick={() => setEnableQRScanner(!enableQRScanner)}>
-            📸 Scan pubKey to start DKG handshake
-          </Button>
+          {instance == 1 && (
+            <Button
+              onClick={() => {
+                setCurrentStep("step_1");
+                setEnableQRScanner(!enableQRScanner);
+              }}
+            >
+              📸 Scan pubKey to start DKG handshake
+            </Button>
+          )}
           {enableQRScanner && <QRScanner setBarcodeValue={setBarcodeValue} />}
         </Flex>
       )}
