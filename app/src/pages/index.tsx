@@ -20,32 +20,23 @@ const Index = () => (
     <Hero />
     <Main>
       <Text color="text" textAlign={"center"} fontSize={"xl"}>
-        Proof-of-concept for building a smart wallet using a 2-out-2 mpc
-        threshold schema.
+        A small demo showcasing how MPC wallets generate keys and create
+        signatures.
       </Text>
-
-      <List spacing={3} my={0} color="text" textAlign={"center"}>
-        <ListItem>
-          <ListIcon as={CheckCircleIcon} color="green.500" />
-          Generate a <Code>secp256k1</Code> wallet securely using the Web
-          Cryptography API.
-        </ListItem>
-        <ListItem>
-          <ListIcon as={CheckCircleIcon} color="green.500" />
-          Protect the private key by storing it in the browser using the Web
-          IndexDB API.
-        </ListItem>
-        <ListItem>
-          <ListIcon as={CheckCircleIcon} color="green.500" />
-          Sign transactions offline only by ensuring the app has no internet
-          using the Navigator API.
-        </ListItem>
-        <ListItem>
-          <ListIcon as={CheckCircleIcon} color="green.500" />
-          Exchange signed transactions by using QR codes for a reader and
-          viewer.
-        </ListItem>
-      </List>
+      <Text mt='3'>
+        You have probably heard about <Code>MPC</Code> wallets, and why they are
+        extremely relevant and important in the digital asset industry. Although
+        there are many concepts around them, the core of an <Code>MPC</Code> wallet is simple:
+        <b> it enables the generation of private keys and signing with them
+          without having to rely on a single point of failure.
+        </b>
+      </Text>
+      <Text>
+        The following is a demo showcases a popular MPC algorithm, using
+        the <Code>2-out-2</Code> ECDSA setup for a signature key. We'll use
+        your computer and your mobile phone to control an Ethereum wallet
+        and submit a transaction with it.
+      </Text>
     </Main>
 
     <DarkModeSwitch />

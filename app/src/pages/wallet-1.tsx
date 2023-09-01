@@ -59,15 +59,15 @@ const Index = () => {
       <Hero />
       <Main>
         <Text color="text" textAlign={"center"} fontSize={"xl"}>
-          Proof-of-concept for building a smart wallet using a 2-out-2 mpc
-          threshold schema.
+        A small demo showcasing how MPC wallets generate keys and create
+        signatures.
         </Text>
 
         <Flex alignItems={"center"} flexDir={"column"}>
-          <Text fontSize="2xl">Wallet 1</Text>
+          <Text fontSize="2xl">Device 1 (Computer)</Text>
           <Text fontSize="sm">
-            Wallet mode displays a transaction in the form of a QR code to be
-            scanned.
+            We'll kickstart the <b>Distributed Key Generation</b> (or DKG for short)
+            in our main device, which we'll then use to share the key with.
           </Text>
           <Flex mt="4">
             <Flex flexDir={"column"}>

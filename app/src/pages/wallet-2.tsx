@@ -51,15 +51,15 @@ const Index = () => {
       <Hero />
       <Main>
         <Text color="text" textAlign={"center"} fontSize={"xl"}>
-          Proof-of-concept for building a smart wallet using a 2-out-2 mpc
-          threshold schema.
+        A small demo showcasing how MPC wallets generate keys and create
+        signatures.
         </Text>
 
         <Flex alignItems={"center"} flexDir={"column"}>
-          <Text fontSize="2xl">Wallet 2</Text>
+        <Text fontSize="2xl">Device 2 (Phone)</Text>
           <Text fontSize="sm">
-            Wallet mode is only available if the device is offline and the
-            application has been saved as a PWA.
+            Once our computer has kickstarted the key generation ceremony, we need to
+            scan the first payload to stablish a communication channel to interact safely.
           </Text>
           <Flex mt="4" flexDir={"column"}>
             <Button

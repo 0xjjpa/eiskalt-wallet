@@ -14,34 +14,30 @@ export const CTA = () => {
     width="full"
     maxWidth="3xl"
     py={3}
-    bg='whiteAlpha.900'
-    _dark={{
-      bg: 'blackAlpha.300',
-    }}
   >
     <Button
       as={Link}
       href='/wallet-1'
-      variant={ pathname == '/wallet-1' ? "solid" : "outline" }
-      colorScheme="blue"
+      colorScheme={ pathname == '/wallet-1' ? "green" : "blue" }
+      variant="solid"
       rounded="button"
       flexGrow={1}
       mx={2}
       width="full"
     >
-      👤 Person 1
+      💻 Computer
     </Button>
     <Button
       as={Link}
       href='/wallet-2'
-      variant={ pathname == '/wallet-2' ? "solid" : "outline" }
-      colorScheme="blue"
+      colorScheme={ pathname == '/wallet-2' ? "green" : "blue" }
+      variant="solid"
       rounded="button"
       flexGrow={3}
       mx={2}
       width="full"
     >
-      👤 Person 2
+      📱 Mobile
     </Button>
   </Container>
 )}
