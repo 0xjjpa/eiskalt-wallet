@@ -40,6 +40,7 @@ const messageOneAtom = atomWithStorage("messageOne", "");
 const messageTwoAtom = atomWithStorage("messageTwo", "");
 const messageThreeAtom = atomWithStorage("messageThree", "");
 const messageDoneForTwoAtom = atomWithStorage("messageDoneForTwo", "");
+const keyshareAtom = atomWithStorage("keyshare", "")
 
 export const MPCWallet = ({
   dkg,
@@ -71,6 +72,7 @@ export const MPCWallet = ({
   const [keyshare, setKeyshare] = useState<
     JsonObject.JsonObject_KeyShare2 | JsonObject.JsonObject_KeyShare1
   >();
+  const [storedKeyshare, setStoredKeyshare] = useAtom(keyshareAtom)
 
   const stepOne = async (pub: string) => {
     console.log("(🔑,1️⃣) 🟠 Executing step one, you should be wallet-1");
@@ -120,6 +122,7 @@ export const MPCWallet = ({
 
   useEffect(() => {
     const loadPayload = async (qrPayloadAsIPFSUrl: string) => {
+      setEnableQRScanner(false);
       const response = await readFromIPFSURL(qrPayloadAsIPFSUrl);
       const qrPayload = response.message;
       console.log("(📸,📦) Payload found.", qrPayload);
@@ -137,6 +140,7 @@ export const MPCWallet = ({
       if (currentStep == "step_1_3") {
         const { keyshare } = await stepFive(qrPayload);
         setKeyshare(keyshare);
+        setStoredKeyshare(JSON.stringify(keyshare));
       }
       if (currentStep == "step_2_1") {
         const [_messageOne, pub] = qrPayload.split(",");
@@ -149,6 +153,7 @@ export const MPCWallet = ({
         setMessageDoneForTwo(message);
         setCurrentPayload(message);
         setKeyshare(keyshare);
+        setStoredKeyshare(JSON.stringify(keyshare));
       }
     };
     qrPayload && loadPayload(qrPayload);
@@ -229,7 +234,7 @@ export const MPCWallet = ({
             defaultMessage="1️⃣ Scan pubKey to start DKG handshake"
             onClickHandler={() => {
               setCurrentStep("step_1_1");
-              setEnableQRScanner(!enableQRScanner);
+              setEnableQRScanner(true);
             }}
           />
         )}
@@ -240,7 +245,7 @@ export const MPCWallet = ({
             defaultMessage="3️⃣ Scan signed message 2 to complete DKG"
             onClickHandler={() => {
               setCurrentStep("step_1_2");
-              setEnableQRScanner(!enableQRScanner);
+              setEnableQRScanner(true);
             }}
           />
         )}
@@ -251,7 +256,7 @@ export const MPCWallet = ({
             defaultMessage="5️⃣ Scan done message from 2 to get key"
             onClickHandler={() => {
               setCurrentStep("step_1_3");
-              setEnableQRScanner(!enableQRScanner);
+              setEnableQRScanner(true);
             }}
           />
         )}
@@ -262,7 +267,7 @@ export const MPCWallet = ({
             defaultMessage="2️⃣ Scan message one to agree DKG handshake"
             onClickHandler={() => {
               setCurrentStep("step_2_1");
-              setEnableQRScanner(!enableQRScanner);
+              setEnableQRScanner(true);
             }}
           />
         )}
@@ -273,7 +278,7 @@ export const MPCWallet = ({
             defaultMessage="4️⃣ Scan last message to derive keyshare"
             onClickHandler={() => {
               setCurrentStep("step_2_2");
-              setEnableQRScanner(!enableQRScanner);
+              setEnableQRScanner(true);
             }}
           />
         )}

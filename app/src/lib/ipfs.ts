@@ -9,7 +9,7 @@ export const uploadJSONToIPFS = async ({ message }: { message: string }) => {
     body: JSON.stringify({ message }),
   }
   const response = await (await fetch('https://api.pinata.cloud/pinning/pinJSONToIPFS', fetchOptions)).json()
-  return `https://gateway.pinata.cloud/ipfs/${response.IpfsHash}`
+  return `https://blue-everyday-limpet-805.mypinata.cloud/ipfs/${response.IpfsHash}`
 }
 
 export const readFromIPFSURL = async (url: string) => {
