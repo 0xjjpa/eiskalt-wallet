@@ -17,8 +17,8 @@ export const CTA = () => {
   >
     <Button
       as={Link}
-      href='/wallet-1'
-      colorScheme={ pathname == '/wallet-1' ? "green" : "blue" }
+      href='/computer'
+      colorScheme={ pathname == '/computer' ? "green" : "blue" }
       variant="solid"
       rounded="button"
       flexGrow={1}
@@ -29,8 +29,8 @@ export const CTA = () => {
     </Button>
     <Button
       as={Link}
-      href='/wallet-2'
-      colorScheme={ pathname == '/wallet-2' ? "green" : "blue" }
+      href='/mobile'
+      colorScheme={ pathname == '/mobile' ? "green" : "blue" }
       variant="solid"
       rounded="button"
       flexGrow={3}

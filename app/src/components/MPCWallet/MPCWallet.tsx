@@ -9,6 +9,7 @@ import {
   IconButton,
   useClipboard,
   SimpleGrid,
+  Skeleton,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 const { getHash } = require("emoji-hash-gen");
@@ -40,7 +41,7 @@ const messageOneAtom = atomWithStorage("messageOne", "");
 const messageTwoAtom = atomWithStorage("messageTwo", "");
 const messageThreeAtom = atomWithStorage("messageThree", "");
 const messageDoneForTwoAtom = atomWithStorage("messageDoneForTwo", "");
-const keyshareAtom = atomWithStorage("keyshare", "")
+const keyshareAtom = atomWithStorage("keyshare", "");
 
 export const MPCWallet = ({
   dkg,
@@ -53,16 +54,14 @@ export const MPCWallet = ({
   pub: string;
   instance: number;
 }) => {
-  const {
-    onCopy,
-    setValue: setClipboardValue,
-    hasCopied,
-  } = useClipboard("");
+  const { onCopy, setValue: setClipboardValue, hasCopied } = useClipboard("");
   const [enableQRScanner, setEnableQRScanner] = useState(false);
+  const [enableDevTools, setEnableDevTools] = useState(false);
   const [qrPayload, setBarcodeValue] = useState("");
   const [currentStep, setCurrentStep] = useState<STEP>("step_0");
   const [currentPayload, setCurrentPayload] = useState<string>("");
   const [ipfsURL, setIPFSUrl] = useState<string>("");
+  const [hasLoadedIPFSUrl, setHasLoadedIPFSUrl] = useState(false);
   const [messageOne, setMessageOne] = useAtom(messageOneAtom);
   const [messageTwo, setMessageTwo] = useAtom(messageTwoAtom);
   const [messageThree, setMessageThree] = useAtom(messageThreeAtom);
@@ -72,10 +71,10 @@ export const MPCWallet = ({
   const [keyshare, setKeyshare] = useState<
     JsonObject.JsonObject_KeyShare2 | JsonObject.JsonObject_KeyShare1
   >();
-  const [storedKeyshare, setStoredKeyshare] = useAtom(keyshareAtom)
+  const [storedKeyshare, setStoredKeyshare] = useAtom(keyshareAtom);
 
   const stepOne = async (pub: string) => {
-    console.log("(🔑,1️⃣) 🟠 Executing step one, you should be wallet-1");
+    console.log("(🔑,1️⃣) 🟠 Executing step one, you should be computer");
     const dkgp1 = dkg as DKGP1;
     const message1 = await dkgp1.step1(pub); // This might fail if we have lost the context
     console.log("(🔑,1️⃣) 🟢 Step one executed [message]", message1);
@@ -83,7 +82,7 @@ export const MPCWallet = ({
   };
 
   const stepTwo = async (_messageOne: string, pub: string) => {
-    console.log("(🔑,2️⃣) 🟠 Executing step two, you should be wallet-2");
+    console.log("(🔑,2️⃣) 🟠 Executing step two, you should be mobile");
     const dkgp2 = dkg as DKGP2;
     const message2 = await dkgp2.step1(_messageOne, pub); // This might fail if we have lost the context
     console.log("(🔑,2️⃣) 🟢 Step two executed [message]", message2);
@@ -91,7 +90,7 @@ export const MPCWallet = ({
   };
 
   const stepThree = async (messageTwo: string) => {
-    console.log("(🔑,3️⃣) 🟠 Executing step three, you should be wallet-1");
+    console.log("(🔑,3️⃣) 🟠 Executing step three, you should be computer");
     const dkgp1 = dkg as DKGP1;
     const message3 = await dkgp1.step2(messageTwo); // This might fail if we have lost the context
     console.log("(🔑,3️⃣) 🟢 Step three executed [message]", message3);
@@ -99,7 +98,7 @@ export const MPCWallet = ({
   };
 
   const stepFour = async (_messageThree: string) => {
-    console.log("(🔑,4️⃣) 🟠 Executing step four, you should be wallet-2");
+    console.log("(🔑,4️⃣) 🟠 Executing step four, you should be mobile");
     const dkgp2 = dkg as DKGP2;
     const doneMessage = await dkgp2.step2(_messageThree); // This might fail if we have lost the context
     console.log("(🔑,4️⃣) 🟢 Step four executed [message]", doneMessage);
@@ -108,7 +107,7 @@ export const MPCWallet = ({
   };
 
   const stepFive = async (doneMessageForTwo: string) => {
-    console.log("(🔑,5️⃣) 🟠 Executing step five, you should be wallet-1");
+    console.log("(🔑,5️⃣) 🟠 Executing step five, you should be computer");
     const dkgp1 = dkg as DKGP1;
     const keyshare = await dkgp1.step3(doneMessageForTwo); // This might fail if we have lost the context
     console.log("(🔑,5️⃣) 🟢 Step five executed, no more messages");
@@ -168,8 +167,12 @@ export const MPCWallet = ({
       const ipfsURL = await uploadJSONToIPFS({ message: currentPayload });
       setIPFSUrl(ipfsURL);
       setClipboardValue(ipfsURL);
+      setHasLoadedIPFSUrl(true);
     };
     currentPayload && uploadPayloadToIPFS();
+    return () => {
+      setHasLoadedIPFSUrl(false);
+    };
   }, [currentPayload]);
 
   useEffect(() => {
@@ -182,39 +185,79 @@ export const MPCWallet = ({
   return (
     <Flex mt="2" textAlign={"center"} gap="10" flexDir={"column"}>
       <Box>
-        <Text fontSize={"sm"}>Developer Tools</Text>
-        <SimpleGrid columns={2} mt="5">
-          <Text fontSize={'xs'}>Toggle Camera</Text>
-          <IconButton
-            size={'xs'}
-            w="fit-content"
-            mx="auto"
-            icon={!enableQRScanner ? <ViewIcon /> : <ViewOffIcon />}
-            onClick={() => setEnableQRScanner(!enableQRScanner)}
-            aria-label="Toggle camera"
-          />
-        </SimpleGrid>
-        <SimpleGrid columns={2} mt='2'>
-          <Text fontSize={'xs'}>Copy QR code</Text>
-          <IconButton
-            size={'xs'}
-            w="fit-content"
-            mx="auto"
-            icon={!hasCopied ? <CopyIcon /> : <CheckIcon />}
-            onClick={() => onCopy()}
-            aria-label="Copy QR code"
-          />
-        </SimpleGrid>
+        <Text
+          fontSize={"sm"}
+          fontFamily={"mono"}
+          onClick={() => setEnableDevTools(!enableDevTools)}
+        >
+          Developer Tools
+        </Text>
+        {enableDevTools && (
+          <>
+            <Text fontSize={"xs"}>
+              There are a couple of issues you might see. If the camera isn't
+              showing properly, you can always toggle it on and off manually.
+              Additionally, you can always double check what you are scanning
+              with your phone.
+            </Text>
+            <SimpleGrid columns={2} mt="5">
+              <Text fontSize={"xs"}>Toggle Camera</Text>
+              <IconButton
+                size={"xs"}
+                w="fit-content"
+                mx="auto"
+                icon={!enableQRScanner ? <ViewIcon /> : <ViewOffIcon />}
+                onClick={() => setEnableQRScanner(!enableQRScanner)}
+                aria-label="Toggle camera"
+              />
+            </SimpleGrid>
+            <SimpleGrid columns={2} mt="2">
+              <Text fontSize={"xs"}>Copy QR code</Text>
+              <IconButton
+                size={"xs"}
+                w="fit-content"
+                mx="auto"
+                icon={!hasCopied ? <CopyIcon /> : <CheckIcon />}
+                onClick={() => onCopy()}
+                aria-label="Copy QR code"
+              />
+            </SimpleGrid>
+          </>
+        )}
       </Box>
       <Flex flexDir={"column"} gap="2">
-        {pub && <MPCValue label={"Pub Address"} value={pub} />}
-        {messageOne && <MPCValue label="Message one" value={messageOne} />}
-        {messageTwo && <MPCValue label="Message two" value={messageTwo} />}
+        {pub && <MPCValue label={"Public Address"} value={pub} description="Initial public key value &nbsp;"/>}
+        {messageOne && (
+          <MPCValue
+            label="Message one"
+            value={messageOne}
+            emoji="💻"
+            description="Generated in 💻 and to be scanned by 📱"
+          />
+        )}
+        {messageTwo && (
+          <MPCValue
+            label="Message two"
+            value={messageTwo}
+            emoji="📱"
+            description="Generated in 📱 and to scan by 💻"
+          />
+        )}
         {messageThree && (
-          <MPCValue label="Message three" value={messageThree} />
+          <MPCValue
+            label="Message three"
+            value={messageThree}
+            emoji="💻"
+            description="Generated in 💻 and to be scanned by 📱"
+          />
         )}
         {messageDoneForTwo && (
-          <MPCValue label="Done message" value={messageDoneForTwo} />
+          <MPCValue
+            label="Done message"
+            value={messageDoneForTwo}
+            emoji="📱"
+            description="Generated in 📱 and to be scanned by 💻"
+          />
         )}
         {keyshare && (
           <MPCValue
@@ -222,16 +265,17 @@ export const MPCWallet = ({
             value={deriveAddressFromCurvePoint(keyshare.Q.x, keyshare.Q.y)}
           />
         )}
-        {currentPayload && ipfsURL && <QRCodeImage payload={ipfsURL} />}
+        {currentPayload && ipfsURL && (
+          <Skeleton isLoaded={hasLoadedIPFSUrl}>
+            <QRCodeImage payload={ipfsURL} />
+          </Skeleton>
+        )}
         <Text letterSpacing={"10px"}>{getHash(currentPayload)}</Text>
-        <Heading fontSize={"xl"} as="h3">
-          Scanner
-        </Heading>
-        {instance == 1 && (
+        {pub && instance == 1 && (
           <MPCButton
             hasBeenCompleted={STEP_ONE_ONE_COMPLETED}
             onCompletionMessage="✅ Scanned pub key of Wallet 2"
-            defaultMessage="1️⃣ Scan pubKey to start DKG handshake"
+            defaultMessage="1️⃣ Scan 📱's QR code to start DKG"
             onClickHandler={() => {
               setCurrentStep("step_1_1");
               setEnableQRScanner(true);
@@ -242,7 +286,7 @@ export const MPCWallet = ({
           <MPCButton
             hasBeenCompleted={STEP_ONE_TWO_COMPLETED}
             onCompletionMessage="✅ Scanned message from Wallet 2"
-            defaultMessage="3️⃣ Scan signed message 2 to complete DKG"
+            defaultMessage="3️⃣ Scan 📱's signed QR code to continue DKG"
             onClickHandler={() => {
               setCurrentStep("step_1_2");
               setEnableQRScanner(true);
@@ -252,19 +296,19 @@ export const MPCWallet = ({
         {instance == 1 && STEP_ONE_TWO_COMPLETED && (
           <MPCButton
             hasBeenCompleted={!!keyshare}
-            onCompletionMessage="✅ Scanned message and completed setup"
-            defaultMessage="5️⃣ Scan done message from 2 to get key"
+            onCompletionMessage="✅ DKG message and completed setup"
+            defaultMessage="5️⃣ Scan 📱's last QR code to complet DKG setup"
             onClickHandler={() => {
               setCurrentStep("step_1_3");
               setEnableQRScanner(true);
             }}
           />
         )}
-        {instance == 2 && (
+        {pub && instance == 2 && (
           <MPCButton
             hasBeenCompleted={STEP_TWO_ONE_COMPLETED}
-            onCompletionMessage="✅ Scanned message one from Wallet 1"
-            defaultMessage="2️⃣ Scan message one to agree DKG handshake"
+            onCompletionMessage="✅ Scanned message one from 📱"
+            defaultMessage="2️⃣ Scan 💻's QR code to continue"
             onClickHandler={() => {
               setCurrentStep("step_2_1");
               setEnableQRScanner(true);
@@ -274,8 +318,8 @@ export const MPCWallet = ({
         {instance == 2 && STEP_TWO_ONE_COMPLETED && (
           <MPCButton
             hasBeenCompleted={STEP_TWO_TWO_COMPLETED}
-            onCompletionMessage="✅ Scanned all messages needed from Wallet 1"
-            defaultMessage="4️⃣ Scan last message to derive keyshare"
+            onCompletionMessage="✅ DKG Generation completed on 📱"
+            defaultMessage="4️⃣ Scan 💻's last QR code to complete DKG"
             onClickHandler={() => {
               setCurrentStep("step_2_2");
               setEnableQRScanner(true);

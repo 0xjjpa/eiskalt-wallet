@@ -5,6 +5,7 @@ import {
   List,
   ListIcon,
   ListItem,
+  Flex,
 } from "@chakra-ui/react";
 import { CheckCircleIcon, LinkIcon } from "@chakra-ui/icons";
 
@@ -14,39 +15,52 @@ import { Main } from "../components/Main";
 import { DarkModeSwitch } from "../components/DarkModeSwitch";
 import { CTA } from "../components/CTA";
 import { Footer } from "../components/Footer";
+import { ContentIntro } from "../components/Content/ContentIntro";
+import { ContentFooter } from "../components/Content/ContentFooter";
+import { QRCodeImage } from "../components/QRCodeImage";
+import { useEffect, useState } from "react";
 
-const Index = () => (
+const Index = () => { 
+  const [currentUrl, setCurrentUrl] = useState("No URL yet");
+
+  useEffect(() => {
+    location && setCurrentUrl(`${location.href}/mobile`)
+  }, [])
+  
+  return(
   <Container height="100vh">
     <Hero />
     <Main>
-      <Text color="text" textAlign={"center"} fontSize={"xl"}>
-        A small demo showcasing how MPC wallets generate keys and create
-        signatures.
-      </Text>
-      <Text mt='3'>
+      <ContentIntro />
+      <Text mt="3">
         You have probably heard about <Code>MPC</Code> wallets, and why they are
         extremely relevant and important in the digital asset industry. Although
-        there are many concepts around them, the core of an <Code>MPC</Code> wallet is simple:
-        <b> it enables the generation of private keys and signing with them
-          without having to rely on a single point of failure.
+        there are many concepts around them, the core of an <Code>MPC</Code>{" "}
+        wallet is simple:
+        <b>
+          {" "}
+          it enables the management of digital asset addresses the ability to
+          sign transactions without having to rely on a single point of failure.
         </b>
       </Text>
       <Text>
-        The following is a demo showcases a popular MPC algorithm, using
-        the <Code>2-out-2</Code> ECDSA setup for a signature key. We'll use
-        your computer and your mobile phone to control an Ethereum wallet
-        and submit a transaction with it.
+        The following is a live demo which relies on a Paillier cryptosystem to
+        generate a <Code>2-out-2</Code> threshold signature schema using a
+        computer and a mobile phone to derive a crypto account and sign valid
+        transactions for the account.
       </Text>
+      <Flex flexDir={"column"} textAlign={'center'}>
+        <QRCodeImage payload={currentUrl} />
+        <Text fontSize={"xs"}>
+          Scan this with your mobile phone to go to the mobile section, then head out to the "💻 Computer" section.
+        </Text>
+      </Flex>
     </Main>
 
     <DarkModeSwitch />
-    <Footer>
-      <Text fontSize={"sm"}>
-        A proof of concept by <Code>0xjjpa</Code>
-      </Text>
-    </Footer>
+    <ContentFooter />
     <CTA />
   </Container>
-);
+)};
 
 export default Index;

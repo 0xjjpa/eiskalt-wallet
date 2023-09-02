@@ -13,6 +13,8 @@ import { Footer } from "../components/Footer";
 import useOnlineStatus from "../hooks/useOnlineStatus";
 import { OfflineWallet } from "../components/OfflineWallet/OfflineWallet";
 import { MPCWallet } from "../components/MPCWallet/MPCWallet";
+import { ContentIntro } from "../components/Content/ContentIntro";
+import { ContentFooter } from "../components/Content/ContentFooter";
 
 const dkgp2PrivAtom = atomWithStorage("dkgp2-priv", "");
 const dkgp2PubAtom = atomWithStorage("dkgp2-pub", "");
@@ -25,7 +27,7 @@ const Index = () => {
 
   const [priv, setPriv] = useAtom(dkgp2PrivAtom);
   const [pub, setPub] = useAtom(dkgp2PubAtom);
-  const INSTANCE = 2
+  const INSTANCE = 2;
 
   useEffect(() => {
     const dkg2 = new DKGP2();
@@ -50,18 +52,16 @@ const Index = () => {
     <Container height="100vh">
       <Hero />
       <Main>
-        <Text color="text" textAlign={"center"} fontSize={"xl"}>
-        A small demo showcasing how MPC wallets generate keys and create
-        signatures.
-        </Text>
+        <ContentIntro />
 
         <Flex alignItems={"center"} flexDir={"column"}>
-        <Text fontSize="2xl">Device 2 (Phone)</Text>
-          <Text fontSize="sm">
-            Once our computer has kickstarted the key generation ceremony, we need to
-            scan the first payload to stablish a communication channel to interact safely.
+          <Text fontSize="2xl">Mobile</Text>
+          <Text fontSize="sm" textAlign={"center"}>
+            We need our computer to kickstart the key generation ceremony, which
+            means we need the computer to scan our mobile's first payload as our
+            first step of our Distributed Key Generation (DKG) algorithm.
           </Text>
-          <Flex mt="4" flexDir={"column"}>
+          <Flex mt="4" flexDir={"column"} maxW={'320px'}>
             <Button
               isLoading={isLoading}
               onClick={() => {
@@ -80,24 +80,15 @@ const Index = () => {
                 setFailTimeout(fail);
               }}
             >
-              {`🔑 Generate MPC share (pt.${INSTANCE})`}
+              {`🔑 Start DKG (from 📱)`}
             </Button>
-            <MPCWallet
-              dkg={dkg}
-              pub={pub}
-              priv={priv}
-              instance={2}
-            />
+            <MPCWallet dkg={dkg} pub={pub} priv={priv} instance={2} />
           </Flex>
         </Flex>
       </Main>
 
       <DarkModeSwitch />
-      <Footer>
-        <Text fontSize={"sm"}>
-          A proof of concept by <Code>0xjjpa</Code>
-        </Text>
-      </Footer>
+      <ContentFooter />
       <CTA />
     </Container>
   );

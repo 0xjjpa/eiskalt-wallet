@@ -21,6 +21,8 @@ import { DarkModeSwitch } from "../components/DarkModeSwitch";
 import { CTA } from "../components/CTA";
 import { Footer } from "../components/Footer";
 import { MPCWallet } from "../components/MPCWallet/MPCWallet";
+import { ContentIntro } from "../components/Content/ContentIntro";
+import { ContentFooter } from "../components/Content/ContentFooter";
 
 const dkgp1PrivAtom = atomWithStorage("dkgp1-priv", "");
 const dkgp1PubAtom = atomWithStorage("dkgp1-pub", "");
@@ -33,7 +35,7 @@ const Index = () => {
 
   const [priv, setPriv] = useAtom(dkgp1PrivAtom);
   const [pub, setPub] = useAtom(dkgp1PubAtom);
-  const INSTANCE = 1
+  const INSTANCE = 1;
 
   useEffect(() => {
     const dkg1 = new DKGP1();
@@ -58,16 +60,14 @@ const Index = () => {
     <Container height="100vh">
       <Hero />
       <Main>
-        <Text color="text" textAlign={"center"} fontSize={"xl"}>
-        A small demo showcasing how MPC wallets generate keys and create
-        signatures.
-        </Text>
+        <ContentIntro />
 
         <Flex alignItems={"center"} flexDir={"column"}>
-          <Text fontSize="2xl">Device 1 (Computer)</Text>
+          <Text fontSize="2xl">Computer</Text>
           <Text fontSize="sm">
-            We'll kickstart the <b>Distributed Key Generation</b> (or DKG for short)
-            in our main device, which we'll then use to share the key with.
+            We'll kickstart the <b>Distributed Key Generation</b> (or DKG for
+            short) in our main device, which we'll then use to share the key
+            with.
           </Text>
           <Flex mt="4">
             <Flex flexDir={"column"}>
@@ -89,25 +89,16 @@ const Index = () => {
                   setFailTimeout(fail);
                 }}
               >
-                {`🔑 Generate MPC share (pt.${INSTANCE})`}
+                {`🔑 Start DKG (from 💻)`}
               </Button>
-              <MPCWallet
-                dkg={dkg}
-                pub={pub}
-                priv={priv}
-                instance={INSTANCE}
-              />
+              <MPCWallet dkg={dkg} pub={pub} priv={priv} instance={INSTANCE} />
             </Flex>
           </Flex>
         </Flex>
       </Main>
 
       <DarkModeSwitch />
-      <Footer>
-        <Text fontSize={"sm"}>
-          A proof of concept by <Code>0xjjpa</Code>
-        </Text>
-      </Footer>
+      <ContentFooter />
       <CTA />
     </Container>
   );
