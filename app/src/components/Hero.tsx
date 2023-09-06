@@ -18,5 +18,5 @@ export const Hero = ({ title }: { title: string }) => {
 };
 
 Hero.defaultProps = {
-  title: "💻 Ping-pong wallet 📱",
+  title: "💻 mpc.is 📱",
 };

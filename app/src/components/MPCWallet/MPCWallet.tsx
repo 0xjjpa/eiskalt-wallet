@@ -226,7 +226,18 @@ export const MPCWallet = ({
         )}
       </Box>
       <Flex flexDir={"column"} gap="2">
-        {pub && <MPCValue label={"Public Address"} value={pub} description="Initial public key value &nbsp;"/>}
+        {pub && (
+          <MPCValue
+            label={"Public Address"}
+            explanation={`
+              Our DKG algorithm derives a set of private and public keypairs to start
+              the exchange of data information. The public key is the first part of this
+              procedure, and it’s needed for our second device to proceed.
+            `}
+            value={pub}
+            description="Initial public key value &nbsp;"
+          />
+        )}
         {messageOne && (
           <MPCValue
             label="Message one"

@@ -57,9 +57,9 @@ const Index = () => {
         <Flex alignItems={"center"} flexDir={"column"}>
           <Text fontSize="2xl">Mobile</Text>
           <Text fontSize="sm" textAlign={"center"}>
-            We need our computer to kickstart the key generation ceremony, which
-            means we need the computer to scan our mobile's first payload as our
-            first step of our Distributed Key Generation (DKG) algorithm.
+            For the computer to kickstart the <b>Distributed Key Generation (or DKG)</b>, we'll
+            also create our own share of private keys and share our public key. Once that process
+            has been completed, we'll scan the first signed message by the computer’s keyshare.
           </Text>
           <Flex mt="4" flexDir={"column"} maxW={'320px'}>
             <Button

@@ -65,9 +65,9 @@ const Index = () => {
         <Flex alignItems={"center"} flexDir={"column"}>
           <Text fontSize="2xl">Computer</Text>
           <Text fontSize="sm">
-            We'll kickstart the <b>Distributed Key Generation</b> (or DKG for
-            short) in our main device, which we'll then use to share the key
-            with.
+            We'll kickstart the <b>Distributed Key Generation</b> (or DKG) in
+            our main device, which we'll then use to share the key with. The
+            procedure might take a bit of time depending on your computer.
           </Text>
           <Flex mt="4">
             <Flex flexDir={"column"}>
