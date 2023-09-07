@@ -1,5 +1,5 @@
 import { Button } from "@chakra-ui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export const MPCButton = ({
   hasBeenCompleted,
@@ -10,9 +10,14 @@ export const MPCButton = ({
   hasBeenCompleted: boolean;
   onCompletionMessage: string;
   defaultMessage: string;
-  onClickHandler: (hasBeenCompletedCallback: () => void) => void;
+  onClickHandler: () => void;
 }) => {
   const [isLoading, setLoading] = useState(false);
+
+  useEffect(() => {
+    hasBeenCompleted && setLoading(false);
+  }, [hasBeenCompleted]);
+
   return (
     <Button
       isLoading={isLoading}
@@ -21,7 +26,7 @@ export const MPCButton = ({
       colorScheme={hasBeenCompleted ? "green" : "gray"}
       onClick={() => {
         setLoading(true);
-        onClickHandler(() => setLoading(false));
+        onClickHandler();
       }}
     >
       {hasBeenCompleted ? onCompletionMessage : defaultMessage}

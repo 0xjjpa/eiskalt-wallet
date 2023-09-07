@@ -59,6 +59,7 @@ export const MPCWallet = ({
   const [currentPayload, setCurrentPayload] = useState<string>("");
   const [ipfsURL, setIPFSUrl] = useState<string>("");
   const [hasLoadedIPFSUrl, setHasLoadedIPFSUrl] = useState(false);
+  const [currentMessage, setCurrentMessage] = useState("");
   const [messageOne, setMessageOne] = useState("");
   const [messageTwo, setMessageTwo] = useState("");
   const [messageThree, setMessageThree] = useState("");
@@ -116,7 +117,7 @@ export const MPCWallet = ({
 
   useEffect(() => {
     const loadPayload = async (qrPayloadAsIPFSUrl: string) => {
-      setEnableQRScanner(false);
+      // setEnableQRScanner(false); // We might want to check this ourselves.
       const response = await readFromIPFSURL(qrPayloadAsIPFSUrl);
       const qrPayload = response.message;
       console.log("(📸,📦) Payload found.", qrPayload);
@@ -155,13 +156,15 @@ export const MPCWallet = ({
 
   useEffect(() => {
     pub && setCurrentPayload(pub);
-    return(() => {
+    return () => {
       setCurrentPayload("");
-    })
+    };
   }, [pub]);
 
   useEffect(() => {
     const uploadPayloadToIPFS = async () => {
+      console.log("(📦,ℹ️) Current payload", currentPayload);
+      setCurrentMessage(currentPayload);
       const ipfsURL = await uploadJSONToIPFS({ message: currentPayload });
       setIPFSUrl(ipfsURL);
       setClipboardValue(ipfsURL);
@@ -187,11 +190,21 @@ export const MPCWallet = ({
           fontSize={"sm"}
           fontFamily={"mono"}
           onClick={() => setEnableDevTools(!enableDevTools)}
+          cursor={"pointer"}
+          textDecoration={"underline"}
+          textUnderlineOffset={"5px"}
+          mb="2"
         >
           Developer Tools
         </Text>
         {enableDevTools && (
           <>
+            <Text fontSize={"xs"} mb="2">
+              Use these “Developer Tools” to debug any issue with the
+              application. We use emoji hashes (e.g., ✅, 💻, 📦) to help you
+              visualize what content each QR code has, and to ensure each device
+              has read the expected payload from the other device.
+            </Text>
             <Text fontSize={"xs"}>
               There are a couple of issues you might see. If the camera isn't
               showing properly, you can always toggle it on and off manually.
@@ -249,7 +262,7 @@ export const MPCWallet = ({
             label="Message two"
             value={messageTwo}
             emoji="📱"
-            description="Generated in 📱 and to scan by 💻"
+            description="Generated in 📱 and to be scanned by 💻"
           />
         )}
         {messageThree && (
@@ -274,12 +287,17 @@ export const MPCWallet = ({
             value={deriveAddressFromCurvePoint(keyshare.Q.x, keyshare.Q.y)}
           />
         )}
-        {currentPayload && ipfsURL && (
-          <Skeleton isLoaded={hasLoadedIPFSUrl}>
-            <QRCodeImage payload={ipfsURL} />
-          </Skeleton>
-        )}
-        <Text letterSpacing={"10px"}>{getHash(currentPayload)}</Text>
+        {currentPayload &&
+          ipfsURL &&
+          !(instance == 1 && (currentStep == "step_0")) && (
+            <Box>
+              <Skeleton isLoaded={hasLoadedIPFSUrl}>
+                <QRCodeImage payload={ipfsURL} />
+              </Skeleton>
+              <Text letterSpacing={"10px"}>{getHash(currentPayload)}</Text>
+            </Box>
+          )}
+
         {pub && instance == 1 && (
           <MPCButton
             hasBeenCompleted={STEP_ONE_ONE_COMPLETED}
@@ -306,7 +324,7 @@ export const MPCWallet = ({
           <MPCButton
             hasBeenCompleted={!!keyshare}
             onCompletionMessage="✅ DKG message and completed setup"
-            defaultMessage="5️⃣ Scan 📱's last QR code to complet DKG setup"
+            defaultMessage="5️⃣ Scan 📱's last QR code to complete DKG setup"
             onClickHandler={() => {
               setCurrentStep("step_1_3");
               setEnableQRScanner(true);
