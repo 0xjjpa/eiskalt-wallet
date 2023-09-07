@@ -1,7 +1,7 @@
 {
-    "name": "Eiskalt Wallet",
-    "short_name": "eiskalt",
-    "description": "An offline only wallet for crypto",
+    "name": "MPC Demo",
+    "short_name": "MPC Demo",
+    "description": "An MPC demo showcasing DKG and TSS",
     "start_url": "/",
     "display": "standalone",
     "theme_color" : "#4a90e2",
