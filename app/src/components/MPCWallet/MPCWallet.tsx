@@ -28,6 +28,7 @@ import { MPCValue } from "./MPCValue";
 import { MPCButton } from "./MPCButton";
 import { CheckIcon, CopyIcon, ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import { readFromIPFSURL, uploadJSONToIPFS } from "../../lib/ipfs";
+import { MPCScanner } from "./MPCScanner";
 
 type STEP =
   | "step_0"
@@ -150,10 +151,13 @@ export const MPCWallet = ({
       }
     };
     qrPayload && loadPayload(qrPayload);
-  }, [currentStep, qrPayload]);
+  }, [qrPayload]);
 
   useEffect(() => {
     pub && setCurrentPayload(pub);
+    return(() => {
+      setCurrentPayload("");
+    })
   }, [pub]);
 
   useEffect(() => {
@@ -331,7 +335,12 @@ export const MPCWallet = ({
             }}
           />
         )}
-        {enableQRScanner && <QRScanner setBarcodeValue={setBarcodeValue} />}
+        <MPCScanner
+          isOpen={enableQRScanner}
+          onClose={() => setEnableQRScanner(false)}
+          scannedValue={qrPayload}
+          setScannerValue={setBarcodeValue}
+        />
       </Flex>
     </Flex>
   );
