@@ -37,10 +37,6 @@ type STEP =
   | "step_2_1"
   | "step_2_2";
 
-const messageOneAtom = atomWithStorage("messageOne", "");
-const messageTwoAtom = atomWithStorage("messageTwo", "");
-const messageThreeAtom = atomWithStorage("messageThree", "");
-const messageDoneForTwoAtom = atomWithStorage("messageDoneForTwo", "");
 const keyshareAtom = atomWithStorage("keyshare", "");
 
 export const MPCWallet = ({
@@ -62,12 +58,10 @@ export const MPCWallet = ({
   const [currentPayload, setCurrentPayload] = useState<string>("");
   const [ipfsURL, setIPFSUrl] = useState<string>("");
   const [hasLoadedIPFSUrl, setHasLoadedIPFSUrl] = useState(false);
-  const [messageOne, setMessageOne] = useAtom(messageOneAtom);
-  const [messageTwo, setMessageTwo] = useAtom(messageTwoAtom);
-  const [messageThree, setMessageThree] = useAtom(messageThreeAtom);
-  const [messageDoneForTwo, setMessageDoneForTwo] = useAtom(
-    messageDoneForTwoAtom
-  );
+  const [messageOne, setMessageOne] = useState("");
+  const [messageTwo, setMessageTwo] = useState("");
+  const [messageThree, setMessageThree] = useState("");
+  const [messageDoneForTwo, setMessageDoneForTwo] = useState("");
   const [keyshare, setKeyshare] = useState<
     JsonObject.JsonObject_KeyShare2 | JsonObject.JsonObject_KeyShare1
   >();
@@ -235,7 +229,7 @@ export const MPCWallet = ({
               procedure, and it’s needed for our second device to proceed.
             `}
             value={pub}
-            description="Initial public key value &nbsp;"
+            description="Initial public key &nbsp;"
           />
         )}
         {messageOne && (

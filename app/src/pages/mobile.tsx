@@ -1,6 +1,4 @@
-import { Text, Code, Flex, Badge, useToast, Button } from "@chakra-ui/react";
-import { useAtom } from "jotai";
-import { atomWithStorage } from "jotai/utils";
+import { Text, Flex, useToast, Button } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import { DKGP2 } from "@safeheron/two-party-mpc-adapter";
 
@@ -9,15 +7,9 @@ import { Container } from "../components/Container";
 import { Main } from "../components/Main";
 import { DarkModeSwitch } from "../components/DarkModeSwitch";
 import { CTA } from "../components/CTA";
-import { Footer } from "../components/Footer";
-import useOnlineStatus from "../hooks/useOnlineStatus";
-import { OfflineWallet } from "../components/OfflineWallet/OfflineWallet";
 import { MPCWallet } from "../components/MPCWallet/MPCWallet";
 import { ContentIntro } from "../components/Content/ContentIntro";
 import { ContentFooter } from "../components/Content/ContentFooter";
-
-const dkgp2PrivAtom = atomWithStorage("dkgp2-priv", "");
-const dkgp2PubAtom = atomWithStorage("dkgp2-pub", "");
 
 const Index = () => {
   const toast = useToast();
@@ -25,13 +17,16 @@ const Index = () => {
   const [isLoading, setLoading] = useState(false);
   const [failTimeout, setFailTimeout] = useState<NodeJS.Timeout>();
 
-  const [priv, setPriv] = useAtom(dkgp2PrivAtom);
-  const [pub, setPub] = useAtom(dkgp2PubAtom);
+  const [priv, setPriv] = useState("");
+  const [pub, setPub] = useState("");
   const INSTANCE = 2;
 
   useEffect(() => {
     const dkg2 = new DKGP2();
     setDKG(dkg2);
+    return () => {
+      setDKG(null);
+    };
   }, []);
 
   const handleDKGP1 = async () => {
@@ -57,11 +52,13 @@ const Index = () => {
         <Flex alignItems={"center"} flexDir={"column"}>
           <Text fontSize="2xl">Mobile</Text>
           <Text fontSize="sm" textAlign={"center"}>
-            For the computer to kickstart the <b>Distributed Key Generation (or DKG)</b>, we'll
-            also create our own share of private keys and share our public key. Once that process
-            has been completed, we'll scan the first signed message by the computer’s keyshare.
+            For the computer to kickstart the{" "}
+            <b>Distributed Key Generation (or DKG)</b>, we'll also create our
+            own share of private keys and share our public key. Once that
+            process has been completed, we'll scan the first signed message by
+            the computer’s keyshare.
           </Text>
-          <Flex mt="4" flexDir={"column"} maxW={'320px'}>
+          <Flex mt="4" flexDir={"column"} maxW={"320px"}>
             <Button
               isLoading={isLoading}
               onClick={() => {
@@ -82,7 +79,7 @@ const Index = () => {
             >
               {`🔑 Start DKG (from 📱)`}
             </Button>
-            <MPCWallet dkg={dkg} pub={pub} priv={priv} instance={2} />
+            <MPCWallet dkg={dkg} pub={pub} priv={priv} instance={INSTANCE} />
           </Flex>
         </Flex>
       </Main>
