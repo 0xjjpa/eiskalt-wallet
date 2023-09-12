@@ -10,8 +10,10 @@ import { CTA } from "../components/CTA";
 import { MPCWallet } from "../components/MPCWallet/MPCWallet";
 import { ContentIntro } from "../components/Content/ContentIntro";
 import { ContentFooter } from "../components/Content/ContentFooter";
+import { useRouter } from "next/router";
 
 const Index = () => {
+  const { query, isReady } = useRouter();
   const toast = useToast();
   const [dkg, setDKG] = useState<DKGP2>();
   const [isLoading, setLoading] = useState(false);
@@ -20,6 +22,25 @@ const Index = () => {
   const [priv, setPriv] = useState("");
   const [pub, setPub] = useState("");
   const INSTANCE = 2;
+
+  useEffect(() => {
+    const redirectDesktop = async(uuid: string) => {
+      console.log('(📱,ℹ️) Triggering redirection...');
+      const response = await (await fetch('/api/redirect', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id: uuid }),
+      })).json();
+      console.log('(📱,ℹ️) Redirection triggered', response);
+    }
+    const uuid = query?.uuid;
+    if (uuid) {
+      console.log('(🆔,ℹ️) UUID Found, triggering API call', uuid);
+      redirectDesktop(`${uuid}`);
+    }
+  }, [isReady])
 
   useEffect(() => {
     const dkg2 = new DKGP2();

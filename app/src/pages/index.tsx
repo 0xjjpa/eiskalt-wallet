@@ -1,34 +1,67 @@
 import {
-  Link as ChakraLink,
   Text,
   Code,
-  List,
-  ListIcon,
-  ListItem,
   Flex,
   useColorMode,
+  useClipboard,
+  Box,
 } from "@chakra-ui/react";
-import { CheckCircleIcon, LinkIcon } from "@chakra-ui/icons";
+import Pusher from "pusher-js";
+import { useEffect, useState } from "react";
+import Image from "next/image";
 
 import { Hero } from "../components/Hero";
 import { Container } from "../components/Container";
 import { Main } from "../components/Main";
 import { DarkModeSwitch } from "../components/DarkModeSwitch";
-import { CTA } from "../components/CTA";
-import { Footer } from "../components/Footer";
 import { ContentIntro } from "../components/Content/ContentIntro";
 import { ContentFooter } from "../components/Content/ContentFooter";
 import { QRCodeImage } from "../components/QRCodeImage";
-import { useEffect, useState } from "react";
-import Image from "next/image";
+import { randomBytes } from "crypto";
+import { useRouter } from "next/router";
 
 const Index = () => {
   const [currentUrl, setCurrentUrl] = useState("No URL yet");
+  const { onCopy, setValue, hasCopied } = useClipboard("");
+
   const { colorMode } = useColorMode();
+  const [ _, setUUID] = useState("");
+  const { push } = useRouter();
 
   useEffect(() => {
-    location && setCurrentUrl(`${location.href}/mobile`);
+    const uuid = randomBytes(16).toString("hex");
+    console.log("(🆔,ℹ️) Generated Random UUID", uuid);
+    setUUID(uuid);
+
+    Pusher.logToConsole = true;
+    const channelId = uuid;
+
+    const pusher = new Pusher("d444fe7b34402daa6334", {
+      cluster: "eu",
+    });
+    const channel = pusher.subscribe(channelId);
+
+    channel.bind("mobile-redirect", function (data) {
+      console.log("(📱,ℹ️) Mobile pairing device connected, ready to redirect", data);
+      const id = data?.id;
+      if (uuid == id) {
+        push('/computer')
+      }
+    });
+
+    location &&
+      setCurrentUrl(`${location.href}/mobile?uuid=${uuid}&mobile=true`);
+    return () => {
+      pusher.unsubscribe(channelId);
+    };
   }, []);
+
+  useEffect(() => {
+    setValue(currentUrl);
+    return () => {
+      setValue("");
+    };
+  }, [currentUrl]);
 
   return (
     <Container height="100vh">
@@ -107,17 +140,23 @@ const Index = () => {
           a crypto account and sign valid transactions for the account.
         </Text>
         <Flex flexDir={"column"} textAlign={"center"}>
-          <QRCodeImage payload={currentUrl} />
+          <Box mb="2" cursor={"pointer"} onClick={onCopy}>
+            <QRCodeImage payload={currentUrl} />
+          </Box>
           <Text fontSize={"xs"}>
-            Scan this with your mobile phone to go to the mobile section, then
-            head out to the "💻 Computer" section.
+            {hasCopied
+              ? `Copied URL to your clipboard.`
+              : `Scan this with your mobile phone to go to the mobile (📱) section.
+            Upon scanning this, we'll redirect you to the computer (💻) section.
+            Alternatively, click the QR code to copy the URL and open in a
+            separate tab to mimic a separate device.`}
           </Text>
         </Flex>
       </Main>
 
       <DarkModeSwitch />
       <ContentFooter />
-      <CTA />
+      {/* <CTA /> */}
     </Container>
   );
 };
