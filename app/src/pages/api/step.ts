@@ -17,6 +17,8 @@ const pusher = new Pusher.default({
 })
 
 type Response = {
+  instance: number,
+  step: string,
   status: string,
   message: string
 }
@@ -26,7 +28,7 @@ export default async function handler(
   res: NextApiResponse<Response>
 ) {
 
-  const { body: { id, pub } } = req;
-  await pusher.trigger(id, 'mobile-redirect', { id, pub });
-  res.json({ status: 'ok', message: id });
+  const { body: { id, instance, step, payload } } = req;
+  await pusher.trigger(id, 'step', { id, instance, step, payload });
+  res.json({ status: 'ok', message: id, instance, step });
 }

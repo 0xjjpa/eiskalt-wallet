@@ -1,6 +1,7 @@
 import { Text, Flex, Button, useToast } from "@chakra-ui/react";
 import { DKGP1 } from "@safeheron/two-party-mpc-adapter";
 import { useState, useEffect } from "react";
+const { getHash } = require("emoji-hash-gen");
 
 import { Hero } from "../components/Hero";
 import { Container } from "../components/Container";
@@ -10,12 +11,17 @@ import { CTA } from "../components/CTA";
 import { MPCWallet } from "../components/MPCWallet/MPCWallet";
 import { ContentIntro } from "../components/Content/ContentIntro";
 import { ContentFooter } from "../components/Content/ContentFooter";
+import { useRouter } from "next/router";
+import Pusher from "pusher-js";
 
 const Index = () => {
   const toast = useToast();
+  const { query, isReady } = useRouter();
   const [dkg, setDKG] = useState<DKGP1>();
+  const [socketPayload, setSocketPayload] = useState("");
   const [isLoading, setLoading] = useState(false);
   const [failTimeout, setFailTimeout] = useState<NodeJS.Timeout>();
+  const [uuid, setUUID] = useState("");
 
   const [priv, setPriv] = useState("");
   const [pub, setPub] = useState("");
@@ -28,6 +34,43 @@ const Index = () => {
       setDKG(null);
     };
   }, []);
+
+  useEffect(() => {
+    const uuid = query?.uuid;
+    const mobilePub = query?.pub;
+    console.log("(🌎,ℹ️) Query parameters", query);
+
+    if (mobilePub) {
+      console.log("(💻,ℹ️) Mobile Pub found", mobilePub);
+      setSocketPayload(`${mobilePub}`);
+    }
+
+    if (uuid) {
+      console.log(
+        "(🆔,ℹ️) UUID Found, openning channel to listen to browser calls",
+        uuid
+      );
+
+      Pusher.logToConsole = true;
+      const channelId = `${uuid}`;
+
+      const pusher = new Pusher("d444fe7b34402daa6334", {
+        cluster: "eu",
+      });
+      const channel = pusher.subscribe(channelId);
+      setUUID(channelId);
+
+      channel.bind("step", function (data) {
+        console.log("(💻|📱,ℹ️) Step detected (from 💻), data)");
+        console.log("(#️⃣,ℹ️) Hash for payload", getHash(data.payload));
+        data.instance != INSTANCE && setSocketPayload(data.payload);
+      });
+
+      return () => {
+        pusher.unsubscribe(channelId);
+      };
+    }
+  }, [isReady]);
 
   const handleDKGP1 = async () => {
     console.log("(🔑,⚙️) 🟠 Kickstarting DKG process");
@@ -78,7 +121,15 @@ const Index = () => {
               >
                 {`🔑 Start DKG (from 💻)`}
               </Button>
-              <MPCWallet dkg={dkg} pub={pub} priv={priv} instance={INSTANCE} />
+              <MPCWallet
+                socketPayload={socketPayload}
+                setSocketPayload={setSocketPayload}
+                id={uuid}
+                dkg={dkg}
+                pub={pub}
+                priv={priv}
+                instance={INSTANCE}
+              />
             </Flex>
           </Flex>
         </Flex>

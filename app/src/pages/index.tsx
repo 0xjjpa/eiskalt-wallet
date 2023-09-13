@@ -44,8 +44,9 @@ const Index = () => {
     channel.bind("mobile-redirect", function (data) {
       console.log("(📱,ℹ️) Mobile pairing device connected, ready to redirect", data);
       const id = data?.id;
+      const mobilePub = data?.pub;
       if (uuid == id) {
-        push('/computer')
+        push(`/computer?uuid=${uuid}&pub=${mobilePub}`)
       }
     });
 
