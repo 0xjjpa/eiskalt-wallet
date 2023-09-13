@@ -220,7 +220,8 @@ export const MPCWallet = ({
             <Text fontSize={"xs"}>
               There are a couple of issues you might see. If the emojis you see
               here doesn’t match what you see in the other devices, some data
-              might had been sent incorrectly, and you need to refresh the app.
+              might had been sent incorrectly, and you might need to go back home and
+              start from scratch (i.e., scan QR Code or copy/paste the URL).
             </Text>
             <SimpleGrid columns={2} mt="5">
               <Text fontSize={"xs"}>Session</Text>
@@ -253,7 +254,7 @@ export const MPCWallet = ({
           </>
         )}
       </Box>
-      <Flex flexDir={"column"} gap="2">
+      <Flex flexDir={"column"} gap="5">
         {pub && (
           <MPCValue
             label={"Public Address"}
@@ -327,7 +328,7 @@ export const MPCWallet = ({
             />
           </Box>
         )}
-        <Box mt="10">
+        <Flex mt="10" flexDir={'column'} gap='5'>
           {pub && instance == 1 && (
             <MPCButton
               hasBeenCompleted={STEP_ONE_ONE_COMPLETED}
@@ -353,7 +354,7 @@ export const MPCWallet = ({
             <MPCButton
               hasBeenCompleted={!!keyshare}
               onCompletionMessage="✅ Second signature from 📱 obtained"
-              defaultMessage="5️⃣ Co-sign 📱's signature and complete DKG"
+              defaultMessage="5️⃣ Co-sign 📱's signature to complete DKG"
               onClickHandler={() => {
                 setCurrentStep("step_1_3");
               }}
@@ -373,13 +374,13 @@ export const MPCWallet = ({
             <MPCButton
               hasBeenCompleted={STEP_TWO_TWO_COMPLETED}
               onCompletionMessage="✅ Second signature from 💻 obtained"
-              defaultMessage="4️⃣ Co-sign 💻's signature and complete DKG"
+              defaultMessage="4️⃣ Co-sign 💻's signature to finish DKG"
               onClickHandler={() => {
                 setCurrentStep("step_2_2");
               }}
             />
           )}
-        </Box>
+        </Flex>
       </Flex>
     </Flex>
   );
