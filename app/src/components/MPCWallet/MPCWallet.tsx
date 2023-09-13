@@ -55,6 +55,7 @@ export const MPCWallet = ({
   const [enableQRScanner, setEnableQRScanner] = useState(false);
   const [enableDevTools, setEnableDevTools] = useState(false);
   const [currentStep, setCurrentStep] = useState<STEP>("step_0");
+  const [canGoNextStep, setCanGoNextStep] = useState(false);
   const [ipfsURL, setIPFSUrl] = useState<string>("");
   const [hasLoadedIPFSUrl, setHasLoadedIPFSUrl] = useState(false);
   const [messageOne, setMessageOne] = useState("");
@@ -126,8 +127,10 @@ export const MPCWallet = ({
   const STEP_TWO_TWO_COMPLETED = messageDoneForTwo.length > 0;
 
   useEffect(() => {
-    socketPayload != "" &&
+    if (socketPayload != "") {
       console.log("(🔌,ℹ️) New payload obtained", socketPayload);
+      setCanGoNextStep(true);
+    } 
   }, [socketPayload]);
 
   useEffect(() => {
@@ -184,6 +187,7 @@ export const MPCWallet = ({
         setStoredKeyshare(JSON.stringify(keyshare));
         mpcSDK({ id, instance, payload: message, step: "step_2_2" });
       }
+      setCanGoNextStep(false);
     };
     socketPayload && ipfsURL && loadPayload(ipfsURL);
   }, [currentStep]);
@@ -329,7 +333,7 @@ export const MPCWallet = ({
           </Box>
         )}
         <Flex mt="10" flexDir={'column'} gap='5'>
-          {pub && instance == 1 && (
+          {pub && instance == 1 && canGoNextStep && (
             <MPCButton
               hasBeenCompleted={STEP_ONE_ONE_COMPLETED}
               onCompletionMessage="✅ Public key has been transfered"
@@ -340,7 +344,7 @@ export const MPCWallet = ({
               }}
             />
           )}
-          {instance == 1 && STEP_ONE_ONE_COMPLETED && (
+          {instance == 1 && STEP_ONE_ONE_COMPLETED && canGoNextStep && (
             <MPCButton
               hasBeenCompleted={STEP_ONE_TWO_COMPLETED}
               onCompletionMessage="✅ First signature from 📱 obtained"
@@ -350,7 +354,7 @@ export const MPCWallet = ({
               }}
             />
           )}
-          {instance == 1 && STEP_ONE_TWO_COMPLETED && (
+          {instance == 1 && STEP_ONE_TWO_COMPLETED && canGoNextStep && (
             <MPCButton
               hasBeenCompleted={!!keyshare}
               onCompletionMessage="✅ Second signature from 📱 obtained"
@@ -360,7 +364,7 @@ export const MPCWallet = ({
               }}
             />
           )}
-          {pub && instance == 2 && socketPayload != "" && (
+          {pub && instance == 2 && socketPayload != "" && canGoNextStep && (
             <MPCButton
               hasBeenCompleted={STEP_TWO_ONE_COMPLETED}
               onCompletionMessage="✅ First signature from 💻 obtained"
@@ -370,7 +374,7 @@ export const MPCWallet = ({
               }}
             />
           )}
-          {instance == 2 && STEP_TWO_ONE_COMPLETED && (
+          {instance == 2 && STEP_TWO_ONE_COMPLETED && canGoNextStep && (
             <MPCButton
               hasBeenCompleted={STEP_TWO_TWO_COMPLETED}
               onCompletionMessage="✅ Second signature from 💻 obtained"
