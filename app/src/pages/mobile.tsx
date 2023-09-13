@@ -39,7 +39,10 @@ const Index = () => {
   };
 
   useEffect(() => {
-    const triggerAPICallToredirectDesktop = async (uuid: string, mobilePub: string) => {
+    const triggerAPICallToredirectDesktop = async (
+      uuid: string,
+      mobilePub: string
+    ) => {
       console.log("(📱,ℹ️) Triggering redirection...");
       const response = await (
         await fetch("/api/redirect", {
@@ -55,8 +58,8 @@ const Index = () => {
     const preRequiredOperations = async (uuid: string) => {
       const mobilePub = await handleDKGP1();
       triggerAPICallToredirectDesktop(uuid, mobilePub);
-    }
-    
+    };
+
     const uuid = query?.uuid;
     if (uuid) {
       console.log("(🆔,ℹ️) UUID Found, triggering API call", uuid);
@@ -97,7 +100,12 @@ const Index = () => {
 
       const mobilePub = query?.pub;
       if (mobilePub) {
-        mpcSDK({ id: channelId, instance: INSTANCE, payload: `${mobilePub}`, step: "step_0" })
+        mpcSDK({
+          id: channelId,
+          instance: INSTANCE,
+          payload: `${mobilePub}`,
+          step: "step_0",
+        });
       }
 
       return () => {
@@ -120,11 +128,9 @@ const Index = () => {
         <Flex alignItems={"center"} flexDir={"column"}>
           <Text fontSize="2xl">Mobile</Text>
           <Text fontSize="sm" textAlign={"center"}>
-            For the computer to kickstart the{" "}
-            <b>Distributed Key Generation (or DKG)</b>, we'll also create our
-            own share of private keys and share our public key. Once that
-            process has been completed, we'll scan the first signed message by
-            the computer’s keyshare.
+            The computer will start the Distributed Key Generation (DKG). We have
+            created our private keys and shared them our public key. We now need to
+            wait for their public key to proceed with the next step.
           </Text>
           <Flex mt="4" flexDir={"column"} maxW={"340px"}>
             {/* <Button
@@ -147,7 +153,15 @@ const Index = () => {
             >
               {`🔑 Start DKG (from 📱)`}
             </Button> */}
-            <MPCWallet setSocketPayload={setSocketPayload} socketPayload={socketPayload} id={uuid} dkg={dkg} pub={pub} priv={priv} instance={INSTANCE} />
+            <MPCWallet
+              setSocketPayload={setSocketPayload}
+              socketPayload={socketPayload}
+              id={uuid}
+              dkg={dkg}
+              pub={pub}
+              priv={priv}
+              instance={INSTANCE}
+            />
           </Flex>
         </Flex>
       </Main>

@@ -261,7 +261,7 @@ export const MPCWallet = ({
             explanation={`
               Our DKG algorithm derived a set of private and public keypairs to start
               the exchange of data information. The public key is the first part of this
-              procedure, and it’s needed for our second device to proceed.
+              procedure, and it’s needed by our other device to proceed.
             `}
             value={pub}
             description="Initial public key &nbsp;"
