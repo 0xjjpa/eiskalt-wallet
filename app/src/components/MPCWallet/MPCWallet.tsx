@@ -5,6 +5,7 @@ import {
   IconButton,
   useClipboard,
   SimpleGrid,
+  Code,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import {
@@ -19,7 +20,13 @@ import { atomWithStorage } from "jotai/utils";
 import { useAtom } from "jotai";
 import { MPCValue } from "./MPCValue";
 import { MPCButton } from "./MPCButton";
-import { CheckIcon, CopyIcon, ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
+import {
+  CheckIcon,
+  CopyIcon,
+  DownloadIcon,
+  ViewIcon,
+  ViewOffIcon,
+} from "@chakra-ui/icons";
 import { readFromIPFSURL, uploadJSONToIPFS } from "../../lib/ipfs";
 import { mpcSDK } from "../../lib/mpc";
 import { abbreviate } from "../../helpers";
@@ -263,14 +270,16 @@ export const MPCWallet = ({
                   <Text fontSize={"xs"} fontFamily={"mono"}>
                     Has keyshare
                   </Text>
-                  <IconButton
-                    size={"xs"}
-                    w="fit-content"
-                    ml="5px"
-                    icon={!storedKeyshare ? <ViewIcon /> : <ViewOffIcon />}
-                    onClick={() => {}}
-                    aria-label="Display hash"
-                  />
+                  {storedKeyshare && (
+                    <IconButton
+                      size={"xs"}
+                      w="fit-content"
+                      ml="5px"
+                      icon={<DownloadIcon />}
+                      onClick={() => {setKeyshare(JSON.parse(storedKeyshare))}}
+                      aria-label="Display hash"
+                    />
+                  )}
                 </Flex>
               ) : (
                 <Text fontSize={"xs"} fontFamily={"mono"}>
@@ -352,7 +361,7 @@ export const MPCWallet = ({
             <MPCValue
               label="Keyshare"
               value={deriveAddressFromCurvePoint(keyshare.Q.x, keyshare.Q.y)}
-            />
+            />            
           </Box>
         )}
         <Flex mt="10" flexDir={"column"} gap="5">
