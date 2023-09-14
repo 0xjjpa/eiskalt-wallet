@@ -130,7 +130,7 @@ export const MPCWallet = ({
     if (socketPayload != "") {
       console.log("(🔌,ℹ️) New payload obtained", socketPayload);
       setCanGoNextStep(true);
-    } 
+    }
   }, [socketPayload]);
 
   useEffect(() => {
@@ -224,8 +224,9 @@ export const MPCWallet = ({
             <Text fontSize={"xs"}>
               There are a couple of issues you might see. If the emojis you see
               here doesn’t match what you see in the other devices, some data
-              might had been sent incorrectly, and you might need to go back home and
-              start from scratch (i.e., scan QR Code or copy/paste the URL).
+              might had been sent incorrectly, and you might need to go back
+              home and start from scratch (i.e., scan QR Code or copy/paste the
+              URL).
             </Text>
             <SimpleGrid columns={2} mt="5">
               <Text fontSize={"xs"}>Session</Text>
@@ -254,6 +255,28 @@ export const MPCWallet = ({
               <Text fontSize={"xs"} fontFamily={"mono"}>
                 {currentStep}
               </Text>
+            </SimpleGrid>
+            <SimpleGrid columns={2} mt="2">
+              <Text fontSize={"xs"}>Keyshare</Text>
+              {storedKeyshare ? (
+                <Flex justifyContent={"center"}>
+                  <Text fontSize={"xs"} fontFamily={"mono"}>
+                    Has keyshare
+                  </Text>
+                  <IconButton
+                    size={"xs"}
+                    w="fit-content"
+                    ml="5px"
+                    icon={!storedKeyshare ? <ViewIcon /> : <ViewOffIcon />}
+                    onClick={() => {}}
+                    aria-label="Display hash"
+                  />
+                </Flex>
+              ) : (
+                <Text fontSize={"xs"} fontFamily={"mono"}>
+                  No Keyshare
+                </Text>
+              )}
             </SimpleGrid>
           </>
         )}
@@ -332,7 +355,7 @@ export const MPCWallet = ({
             />
           </Box>
         )}
-        <Flex mt="10" flexDir={'column'} gap='5'>
+        <Flex mt="10" flexDir={"column"} gap="5">
           {pub && instance == 1 && canGoNextStep && (
             <MPCButton
               hasBeenCompleted={STEP_ONE_ONE_COMPLETED}
