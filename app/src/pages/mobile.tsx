@@ -15,6 +15,7 @@ import { ContentFooter } from "../components/Content/ContentFooter";
 import { useRouter } from "next/router";
 import { mpcSDK } from "../lib/mpc";
 import { WebsocketPayload, cosignerHandler } from "../lib/pusher";
+import { Supabase } from "../lib/supabase";
 
 const Index = () => {
   const { query, isReady } = useRouter();
@@ -24,6 +25,7 @@ const Index = () => {
   const [isLoading, setLoading] = useState(false);
   const [failTimeout, setFailTimeout] = useState<NodeJS.Timeout>();
   const [uuid, setUUID] = useState("");
+  const [channel, setChannel] = useState<Supabase>();
 
   const [priv, setPriv] = useState("");
   const [pub, setPub] = useState("");
@@ -118,6 +120,15 @@ const Index = () => {
   }, [isReady]);
 
   useEffect(() => {
+    const uuid = query?.uuid;
+    if (uuid) {
+      const channel = new Supabase(`${uuid}`);
+      channel.listen("sign", cosignerHandler({ instance: INSTANCE }))
+      setChannel(channel);
+    }
+  }, [isReady])
+
+  useEffect(() => {
     clearTimeout(failTimeout);
     setFailTimeout(null);
   }, [isLoading]);
@@ -164,6 +175,7 @@ const Index = () => {
               pub={pub}
               priv={priv}
               instance={INSTANCE}
+              channel={channel}
             />
           </Flex>
         </Flex>
