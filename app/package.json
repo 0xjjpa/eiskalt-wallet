@@ -15,6 +15,7 @@
     "@safeheron/mpcsnap-types": "^1.0.0",
     "@stevent-team/react-qr-hunter": "^0.0.2",
     "@supabase/supabase-js": "^2.33.2",
+    "elliptic": "^6.5.4",
     "emoji-hash-gen": "^1.0.3",
     "framer-motion": "^6.3.0",
     "jotai": "^2.4.0",
@@ -29,6 +30,7 @@
   },
   "devDependencies": {
     "@swc-jotai/react-refresh": "^0.1.0",
+    "@types/elliptic": "^6.4.14",
     "@types/node": "^18.0.0",
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",

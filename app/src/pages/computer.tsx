@@ -69,7 +69,7 @@ const Index = () => {
         data.instance != INSTANCE && setSocketPayload(data.payload);
       });
 
-      channel.bind("sign", cosignerHandler({ instance: INSTANCE }));
+      //channel.bind("sign", cosignerHandler({ instance: INSTANCE }));
 
       return () => {
         pusher.unsubscribe(channelId);
@@ -81,7 +81,6 @@ const Index = () => {
     const uuid = query?.uuid;
     if (uuid) {
       const channel = new Supabase(`${uuid}`);
-      channel.listen("sign", cosignerHandler({ instance: INSTANCE }))
       setChannel(channel);
     }
   }, [isReady])
