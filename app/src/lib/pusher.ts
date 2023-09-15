@@ -5,6 +5,7 @@ import { PubCurveBasePoint } from "@safeheron/two-party-mpc-adapter/dist/enc/Enc
 import { ec as EC } from 'elliptic';
 import { mpcSDK } from "./mpc";
 import { Supabase } from "./supabase";
+import { useStatusStore } from "../components/MPCWallet/MPCSign";
 
 
 export type WebsocketPayload = {
@@ -66,6 +67,9 @@ export function cosignerHandler({ instance, keyshare, privKey, pubKey, channel }
               channel,
             });
 
+            stepCounter++
+            useStatusStore.setState({ status: stepCounter * 10 });
+
           } else {
             console.log('(0️⃣-📱,ℹ️) Step 0 to be executed in 📱');
             console.log('(📦,ℹ️) Payload obtained', socketPayload)
@@ -76,11 +80,13 @@ export function cosignerHandler({ instance, keyshare, privKey, pubKey, channel }
             signerP2 = new SignerP2(keyshare, Encryptor.encodeAuthPriv(privKey), Encryptor.encodeAuthPub(otherDevicePubKey))
             const message2 = await signerP2.step1(JSON.stringify(txObject), parsed.message1)
             console.log('(📱,ℹ️) Signer for device 2 created, and signed message2.', message2)
+
+            stepCounter++
+            useStatusStore.setState({ status: stepCounter * 10 });
           }
         }
       }
     }
-    stepCounter++
-    console.log("Handler Counter", stepCounter);
+
   }
 }

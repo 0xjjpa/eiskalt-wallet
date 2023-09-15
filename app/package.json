@@ -26,7 +26,8 @@
     "qrcode-svg": "^1.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "xrpl": "^2.10.0"
+    "xrpl": "^2.10.0",
+    "zustand": "^4.4.1"
   },
   "devDependencies": {
     "@swc-jotai/react-refresh": "^0.1.0",
