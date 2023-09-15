@@ -51,7 +51,7 @@ const Index = () => {
     });
 
     location &&
-      setCurrentUrl(`${location.href}/mobile?uuid=${uuid}&mobile=true`);
+      setCurrentUrl(`${location.href}mobile?uuid=${uuid}&mobile=true`);
     return () => {
       pusher.unsubscribe(channelId);
     };
