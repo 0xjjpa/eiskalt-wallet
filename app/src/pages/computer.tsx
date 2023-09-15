@@ -13,6 +13,7 @@ import { ContentIntro } from "../components/Content/ContentIntro";
 import { ContentFooter } from "../components/Content/ContentFooter";
 import { useRouter } from "next/router";
 import Pusher from "pusher-js";
+import { WebsocketPayload, cosignerHandler } from "../lib/pusher";
 
 const Index = () => {
   const toast = useToast();
@@ -60,11 +61,13 @@ const Index = () => {
       const channel = pusher.subscribe(channelId);
       setUUID(channelId);
 
-      channel.bind("step", function (data) {
+      channel.bind("step", function (data: WebsocketPayload) {
         console.log("(💻|📱,ℹ️) Step detected (from 💻), data)");
         console.log("(#️⃣,ℹ️) Hash for payload", getHash(data.payload));
         data.instance != INSTANCE && setSocketPayload(data.payload);
       });
+
+      channel.bind("sign", cosignerHandler({ instance: INSTANCE }));
 
       return () => {
         pusher.unsubscribe(channelId);
