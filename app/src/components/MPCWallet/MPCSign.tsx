@@ -94,8 +94,8 @@ export const MPCSign = ({
       ) : (
         <Text fontSize={"xs"}>Start the signature from 📱</Text>
       )}
-      <CircularProgress value={status} color="green.400">
-        <CircularProgressLabel>{status}%</CircularProgressLabel>
+      <CircularProgress value={instance == 1 ? (status * 100)/30 : (status * 100)/20} color="green.400">
+        <CircularProgressLabel>{instance == 1 ? ((status * 100)/30).toFixed(2) : ((status * 100)/20).toFixed(2)}%</CircularProgressLabel>
       </CircularProgress>
     </Box>
   );
