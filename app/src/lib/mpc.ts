@@ -2,7 +2,7 @@ import { STEP } from "../components/MPCWallet/MPCWallet";
 import { Supabase } from "./supabase";
 
 export const mpcSDK = async ({ id, instance, step, payload, endpoint = "step", client = "pusher", channel }: { id: string, instance: number, step: STEP, payload: string, endpoint?: string, client?: "pusher" | "supabase", channel?: Supabase }) => {
-  console.log("(⚙️,ℹ️) MPC SDK - Triggering step...");
+  console.log("(⚙️,ℹ️) MPC SDK - Triggering step...", payload);
   if (client == "pusher") {
     const response = await (
       await fetch(`/api/${endpoint}`, {
