@@ -25,14 +25,14 @@ export function cosignerHandler({ instance, keyshare, privKey, pubKey, channel }
   let stepCounter = 0
   let signerP1, signerP2
   const txObject = {
-    nonce: 0,
+    nonce: 1,
     to: "0x6442c72aBD1a9d14c303277a8C994Fae295b6BCB",
     value: 0,
-    chainId: 1,
+    chainId: 5,
     type: 2,
     data: '',
-    maxFeePerGas: '2000',
-    maxPriorityFeePerGas: '500',
+    maxFeePerGas: '20',
+    maxPriorityFeePerGas: '10',
     gasLimit: "21000"
   }
   return async function cosignerListener(data: SupabaseWebsocketPayload) {
