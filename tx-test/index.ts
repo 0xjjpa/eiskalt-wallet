@@ -1,6 +1,6 @@
 import { ethers } from 'ethers'
 
-const rawTx = "0x02f87782012907852e90edd00085ba43b74000830f4240946442c72abd1a9d14c303277a8c994fae295b6bcb880de0b6b3a764000080c001a034b91e89c23fdebf4bb16315885f8c8a3592b7f8a77be65b0ea632e7cd7c1d7ca00f2c914edac9297ce0242903ad80e22e1f128c07c5d4b3b182095e8802bc04ad"
+const rawTx = "0x02f86d018085746a5288008601d1a94a2000825208946442c72abd1a9d14c303277a8c994fae295b6bcb8080c001a054fde9f2eea67d21a7c75bdb4ae4e7aae088d132b9b62f10736e36bf52bbcae7a03da235e79fd262122ecd44eb4b1995e388718b7a90317e278af36516f7f04ae6"
 const parsedTxData = ethers.utils.parseTransaction(rawTx)
 const provider = new ethers.providers.JsonRpcProvider("https://previewnet.hashio.io/api");
 
