@@ -1,11 +1,11 @@
 import { ethers } from 'ethers'
 
-const rawTx = "0x02f86c05018502540be4008504a817c800825208946442c72abd1a9d14c303277a8c994fae295b6bcb8080c080a015248f0e209f101d14115adc28ab3a3fdf98bc91efa95905a313c9c94e8b6b52a04fc158f315d3422a51e3330cd926990751c9f0572c1f0a999453d248ff2293aa"
+const rawTx = "0x02f87782012907852e90edd00085ba43b74000830f4240946442c72abd1a9d14c303277a8c994fae295b6bcb880de0b6b3a764000080c001a034b91e89c23fdebf4bb16315885f8c8a3592b7f8a77be65b0ea632e7cd7c1d7ca00f2c914edac9297ce0242903ad80e22e1f128c07c5d4b3b182095e8802bc04ad"
 const parsedTxData = ethers.utils.parseTransaction(rawTx)
 const provider = new ethers.providers.JsonRpcProvider("https://previewnet.hashio.io/api");
 
 console.log(ethers.utils.parseUnits("2", "wei"));
-console.log(ethers.utils.parseUnits("3", "wei"));
+console.log(ethers.utils.parseUnits("8", "wei"));
 console.log("Parsed data", parsedTxData);
 
 async function sendRawTransaction() {
