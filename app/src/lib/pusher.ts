@@ -5,7 +5,7 @@ import { PubCurveBasePoint } from "@safeheron/two-party-mpc-adapter/dist/enc/Enc
 import { ec as EC } from 'elliptic';
 import { mpcSDK } from "./mpc";
 import { Supabase } from "./supabase";
-import { useStatusStore } from "../components/MPCWallet/MPCSign";
+import { useStatusStore, useTransactionStore } from "../components/MPCWallet/MPCSign";
 
 
 export type WebsocketPayload = {
@@ -167,6 +167,7 @@ export function cosignerHandler({ instance, keyshare, privKey, pubKey, channel }
 
             stepCounter++
             useStatusStore.setState({ status: stepCounter * 10 });
+            useTransactionStore.setState({ rawTransaction: `${rawTx}` });
             break;
           }
         }

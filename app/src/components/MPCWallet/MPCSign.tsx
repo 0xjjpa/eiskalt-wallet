@@ -3,6 +3,7 @@ import {
   Button,
   CircularProgress,
   CircularProgressLabel,
+  Link,
   Text,
 } from "@chakra-ui/react";
 import { JsonObject, Encryptor } from "@safeheron/two-party-mpc-adapter";
@@ -22,6 +23,10 @@ export const useStatusStore = create<{ status: number }>()(() => ({
   status: 0,
 }));
 
+export const useTransactionStore = create<{ rawTransaction: string }>()(() => ({
+  rawTransaction: "",
+}));
+
 export const MPCSign = ({
   sessionId,
   instance,
@@ -36,6 +41,9 @@ export const MPCSign = ({
   const [privKey, setPrivKey] = useState<BN>();
   const [pubKey, setPubKey] = useState<PubCurveBasePoint>();
   const status = useStatusStore((state) => state.status);
+  const rawTransaction = useTransactionStore((state) => state.rawTransaction);
+  const [txHash, setTxHash] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     console.log(`(🔌,ℹ️ ) Listening to client on instance ${instance}`);
@@ -87,6 +95,34 @@ export const MPCSign = ({
       channel,
     });
   };
+
+  const submitSignature = async () => {
+    console.log("(📢,ℹ️) Starting submission...");
+    setIsLoading(true);
+    const txHashresponse = await mpcSDK({
+      id: sessionId,
+      step: "step_0",
+      payload: rawTransaction,
+      instance,
+      endpoint: "submit",
+    });
+    setTxHash(txHashresponse.transactionHash);
+    setIsLoading(false);
+    console.log("(📢,ℹ️) Completed submission, txHash = ", txHash);
+  };
+
+  const SubmissionNode =
+    txHash.length > 0 ? (
+      <Text fontSize={"xs"}>
+        ✅ Success! Submitted transaction, see receipt{" "}
+        <Link target="_blank" href={`https://hashscan.io/previewnet/transaction/${txHash}`}>
+          here
+        </Link>
+      </Text>
+    ) : (
+      <Button isLoading={isLoading} onClick={submitSignature}>📢 Submit demo transaction</Button>
+    );
+
   return (
     <Box>
       {instance == 2 ? (
@@ -94,8 +130,17 @@ export const MPCSign = ({
       ) : (
         <Text fontSize={"xs"}>Start the signature from 📱</Text>
       )}
-      <CircularProgress value={instance == 1 ? (status * 100)/30 : (status * 100)/20} color="green.400">
-        <CircularProgressLabel>{instance == 1 ? ((status * 100)/30).toFixed(0) : ((status * 100)/20).toFixed(0)}%</CircularProgressLabel>
+      {instance == 1 && rawTransaction.length > 0 && SubmissionNode}
+      <CircularProgress
+        value={instance == 1 ? (status * 100) / 30 : (status * 100) / 20}
+        color="green.400"
+      >
+        <CircularProgressLabel>
+          {instance == 1
+            ? ((status * 100) / 30).toFixed(0)
+            : ((status * 100) / 20).toFixed(0)}
+          %
+        </CircularProgressLabel>
       </CircularProgress>
     </Box>
   );
