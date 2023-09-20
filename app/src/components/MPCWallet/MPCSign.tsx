@@ -97,8 +97,17 @@ export const MPCSign = ({
   };
 
   const submitSignature = async () => {
-    console.log("(📢,ℹ️) Starting submission...");
+    console.log("(📢,ℹ️) Starting faucet + submission...");
     setIsLoading(true);
+    const faucetHashresponse = await mpcSDK({
+      id: sessionId,
+      step: "step_0",
+      payload: rawTransaction,
+      instance,
+      endpoint: "faucet",
+    });
+    console.log("(📢,ℹ️) Completed faucet, txHash = ", faucetHashresponse);
+
     const txHashresponse = await mpcSDK({
       id: sessionId,
       step: "step_0",

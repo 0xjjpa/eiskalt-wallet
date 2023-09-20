@@ -7,6 +7,10 @@ type Response = {
   status: string;
 }
 
+export const config = {
+  runtime: 'edge',
+};
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Response>
@@ -15,7 +19,8 @@ export default async function handler(
   const { body: { payload } } = req;
 
   const parsedTxData = ethers.utils.parseTransaction(payload)
-  const provider = new ethers.providers.JsonRpcProvider("https://previewnet.hashio.io/api");
-  const txResponse = await provider.sendTransaction(payload);
-  return res.json({ status: 'ok', transactionHash: txResponse.hash });
+  const faucetReceipt = await (await fetch(`https://hbar.rest/api/previewnet/accounts/${parsedTxData.from}/create`)).json()
+
+  return res.json({ status: 'ok', transactionHash: faucetReceipt });
 }
+
