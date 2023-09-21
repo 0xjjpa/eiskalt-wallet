@@ -18,6 +18,7 @@ import { useEffect, useState } from "react";
 import { cosignerHandler } from "../../lib/pusher";
 
 import { create } from "zustand";
+import { ethers } from "ethers";
 
 export const useStatusStore = create<{ status: number }>()(() => ({
   status: 0,
@@ -97,7 +98,7 @@ export const MPCSign = ({
   };
 
   const submitSignature = async () => {
-    console.log("(📢,ℹ️) Starting faucet + submission...");
+    console.log("(📢,ℹ️) Starting faucet + submission...", rawTransaction);
     setIsLoading(true);
     const faucetHashresponse = await mpcSDK({
       id: sessionId,
@@ -108,14 +109,10 @@ export const MPCSign = ({
     });
     console.log("(📢,ℹ️) Completed faucet, txHash = ", faucetHashresponse);
 
-    const txHashresponse = await mpcSDK({
-      id: sessionId,
-      step: "step_0",
-      payload: rawTransaction,
-      instance,
-      endpoint: "submit",
-    });
-    setTxHash(txHashresponse.transactionHash);
+    const provider = new ethers.providers.JsonRpcProvider("https://previewnet.hashio.io/api");
+    const txResponse = await provider.sendTransaction(rawTransaction);
+    setTxHash(txResponse.hash);
+
     setIsLoading(false);
     console.log("(📢,ℹ️) Completed submission, txHash = ", txHash);
   };
