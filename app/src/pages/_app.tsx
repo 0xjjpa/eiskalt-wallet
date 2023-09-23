@@ -16,7 +16,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           url: 'https://mpc.is/',
           siteName: 'MPC.is',
           images: [{
-            url: 'https://mpc.is/images/mpc.png',
+            url: 'https://mpc.is/images/mpc.jpg',
             width: 1200,
             height: 630,
             alt: 'MPC',
