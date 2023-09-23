@@ -8,7 +8,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <>
       <DefaultSeo
-        title="Passkeys.is"
+        title="MPC.is"
         description="Learn what MPC is and the most important features such as Distributed Key Generation (DKG) and Threshold Signature Scheme (TSS)."
         openGraph={{
           type: 'website',
