@@ -1,6 +1,3 @@
-import '@fontsource/merriweather/700.css'
-import '@fontsource/open-sans/400.css'
-
 import { DefaultSeo } from 'next-seo';
 import { ChakraProvider } from '@chakra-ui/react'
 
